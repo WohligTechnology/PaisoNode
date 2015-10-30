@@ -46,6 +46,12 @@ module.exports = {
         };
         User.find(req.body, callback);
     },
+    countusers: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        User.countusers(req.body, callback);
+    },
     adminlogin: function(req, res) {
         function callback(data) {
             res.json(data);

@@ -184,7 +184,7 @@ module.exports = {
 
                 function callbackfunc1() {
                     db.collection("user").count({
-                        name: {
+                        mobile: {
                             '$regex': check
                         }
                     }, function(err, number) {
@@ -209,7 +209,7 @@ module.exports = {
 
                     function callbackfunc() {
                         db.collection("user").find({
-                            name: {
+                            mobile: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
@@ -302,4 +302,33 @@ module.exports = {
             });
         });
     },
+    countusers: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").count({}, function(err, number) {
+                    if (number != null) {
+                        callback(number);
+                        db.close();
+                    } else if (err) {
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No user found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    }
 };
