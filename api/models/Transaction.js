@@ -1,6 +1,6 @@
 module.exports = {
-    save: function(data, callback) {
-        sails.query(function(err, db) {
+    save: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -10,7 +10,7 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection('transaction').insert(data, function(err, created) {
+                    db.collection('transaction').insert(data, function (err, created) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -39,7 +39,7 @@ module.exports = {
                         _id: transaction
                     }, {
                         $set: data
-                    }, function(err, updated) {
+                    }, function (err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -47,7 +47,7 @@ module.exports = {
                                 comment: "Error"
                             });
                             db.close();
-                        }  else if (updated.result.nModified != 0 && updated.result.n != 0) {
+                        } else if (updated.result.nModified != 0 && updated.result.n != 0) {
                             callback({
                                 value: true
                             });
@@ -70,8 +70,8 @@ module.exports = {
             }
         });
     },
-    find: function(data, callback) {
-        sails.query(function(err, db) {
+    find: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -79,7 +79,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("transaction").find().toArray(function(err, found) {
+                db.collection("transaction").find().toArray(function (err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -100,13 +100,13 @@ module.exports = {
         });
     },
     //Findlimited
-    findlimited: function(data, callback) {
+    findlimited: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
-        sails.query(function(err, db) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -121,7 +121,7 @@ module.exports = {
                         to: {
                             '$regex': check
                         }
-                    }, function(err, number) {
+                    }, function (err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -146,7 +146,7 @@ module.exports = {
                             to: {
                                 '$regex': check
                             }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
                             if (err) {
                                 callback({
                                     value: false
@@ -170,9 +170,75 @@ module.exports = {
             }
         });
     },
-    //Findlimited
-    findone: function(data, callback) {
-        sails.query(function(err, db) {
+    findByType: function (data, callback) {
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("transaction").find({
+                    type: data.type
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
+    findByTypeStatus: function (data, callback) {
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("transaction").find({
+                    type: data.type,
+                    status:data.status
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
+    findone: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -182,7 +248,7 @@ module.exports = {
             if (db) {
                 db.collection("transaction").find({
                     _id: sails.ObjectID(data._id)
-                }).toArray(function(err, data2) {
+                }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -204,8 +270,8 @@ module.exports = {
             }
         });
     },
-    delete: function(data, callback) {
-        sails.query(function(err, db) {
+    delete: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -214,7 +280,7 @@ module.exports = {
             }
             db.collection('transaction').remove({
                 _id: sails.ObjectID(data._id)
-            }, function(err, deleted) {
+            }, function (err, deleted) {
                 if (deleted) {
                     callback({
                         value: true

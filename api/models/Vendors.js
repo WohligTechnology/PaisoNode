@@ -1,7 +1,7 @@
 module.exports = {
     save: function (data, callback) {
-        if(data.category){
-            data.category=sails.ObjectID(data.category);
+        if (data.category) {
+            data.category = sails.ObjectID(data.category);
         }
         sails.query(function (err, db) {
             if (err) {
