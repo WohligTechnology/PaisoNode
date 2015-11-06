@@ -25,7 +25,8 @@ module.exports.bootstrap = function(cb) {
         sails.mime = require('mime'),
         sails.moment = require('moment'),
         sails.fs = require('fs'),
-        sails.lwip = require('lwip'),
+        // sails.lwip = require('lwip'),
+        // sails.myurl = "http://vignesh.com:1337/",
         // Connection URL
         sails.url = 'mongodb://localhost:27017/paiso';
     sails.query = function(myfunc) {
