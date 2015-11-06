@@ -1,13 +1,13 @@
 /**
-* Banner.js
-*
-* @description :: TODO: You might write a short summary of how this model works and what it represents here.
-* @docs        :: http://sailsjs.org/#!documentation/models
-*/
+ * Banner.js
+ *
+ * @description :: TODO: You might write a short summary of how this model works and what it represents here.
+ * @docs        :: http://sailsjs.org/#!documentation/models
+ */
 
 module.exports = {
-save: function(data, callback) {
-        sails.query(function(err, db) {
+    save: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -17,7 +17,7 @@ save: function(data, callback) {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection('banner').insert(data, function(err, created) {
+                    db.collection('banner').insert(data, function (err, created) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -46,7 +46,7 @@ save: function(data, callback) {
                         _id: banner
                     }, {
                         $set: data
-                    }, function(err, updated) {
+                    }, function (err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -54,7 +54,7 @@ save: function(data, callback) {
                                 comment: "Error"
                             });
                             db.close();
-                        }  else if (updated.result.nModified != 0 && updated.result.n != 0) {
+                        } else if (updated.result.nModified != 0 && updated.result.n != 0) {
                             callback({
                                 value: true
                             });
@@ -77,8 +77,8 @@ save: function(data, callback) {
             }
         });
     },
-    find: function(data, callback) {
-        sails.query(function(err, db) {
+    find: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -86,7 +86,7 @@ save: function(data, callback) {
                 });
             }
             if (db) {
-                db.collection("banner").find().toArray(function(err, found) {
+                db.collection("banner").find().toArray(function (err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -107,13 +107,13 @@ save: function(data, callback) {
         });
     },
     //Findlimited
-    findlimited: function(data, callback) {
+    findlimited: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
-        sails.query(function(err, db) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -128,7 +128,7 @@ save: function(data, callback) {
                         link: {
                             '$regex': check
                         }
-                    }, function(err, number) {
+                    }, function (err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -153,7 +153,7 @@ save: function(data, callback) {
                             link: {
                                 '$regex': check
                             }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
                             if (err) {
                                 callback({
                                     value: false
@@ -178,8 +178,8 @@ save: function(data, callback) {
         });
     },
     //Findlimited
-    findone: function(data, callback) {
-        sails.query(function(err, db) {
+    findone: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -189,7 +189,7 @@ save: function(data, callback) {
             if (db) {
                 db.collection("banner").find({
                     _id: sails.ObjectID(data._id)
-                }).toArray(function(err, data2) {
+                }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -211,8 +211,8 @@ save: function(data, callback) {
             }
         });
     },
-    delete: function(data, callback) {
-        sails.query(function(err, db) {
+    delete: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -221,7 +221,7 @@ save: function(data, callback) {
             }
             db.collection('banner').remove({
                 _id: sails.ObjectID(data._id)
-            }, function(err, deleted) {
+            }, function (err, deleted) {
                 if (deleted) {
                     callback({
                         value: true
@@ -244,4 +244,3 @@ save: function(data, callback) {
         });
     }
 };
-

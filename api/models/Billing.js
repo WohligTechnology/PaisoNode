@@ -1,7 +1,7 @@
 module.exports = {
-    save: function(data, callback) {
+    save: function (data, callback) {
         if (data.user && data.user != "") {
-            sails.query(function(err, db) {
+            sails.query(function (err, db) {
                 if (err) {
                     console.log(err);
                     callback({
@@ -19,7 +19,7 @@ module.exports = {
                             $push: {
                                 billing: data
                             }
-                        }, function(err, updated) {
+                        }, function (err, updated) {
                             if (err) {
                                 console.log(err);
                                 callback({
@@ -43,7 +43,7 @@ module.exports = {
                         data._id = sails.ObjectID(data._id);
                         var tobechanged = {};
                         var attribute = "billing.$.";
-                        _.forIn(data, function(value, key) {
+                        _.forIn(data, function (value, key) {
                             tobechanged[attribute + key] = value;
                         });
                         db.collection("user").update({
@@ -51,7 +51,7 @@ module.exports = {
                             "billing._id": data._id
                         }, {
                             $set: tobechanged
-                        }, function(err, updated) {
+                        }, function (err, updated) {
                             if (err) {
                                 console.log(err);
                                 callback({
@@ -88,12 +88,12 @@ module.exports = {
             });
         }
     },
-    delete: function(data, callback) {
+    delete: function (data, callback) {
         if (data.user && data.user != "") {
             var user = sails.ObjectID(data.user);
             delete data.user;
             data._id = sails.ObjectID(data._id);
-            sails.query(function(err, db) {
+            sails.query(function (err, db) {
                 if (err) {
                     console.log(err);
                     callback({
@@ -109,7 +109,7 @@ module.exports = {
                                 "_id": sails.ObjectID(data._id)
                             }
                         }
-                    }, function(err, updated) {
+                    }, function (err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -139,8 +139,8 @@ module.exports = {
         }
     },
     //Findlimited
-    findlimited: function(data, callback) {
-        sails.query(function(err, db) {
+    findlimited: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -183,7 +183,7 @@ module.exports = {
                         $project: {
                             count: 1
                         }
-                    }]).toArray(function(err, result) {
+                    }]).toArray(function (err, result) {
                         if (result && result[0]) {
                             newreturns.total = result[0].count;
                             newreturns.totalpages = Math.ceil(result[0].count / data.pagesize);
@@ -216,7 +216,7 @@ module.exports = {
                             $project: {
                                 billing: 1
                             }
-                        }]).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        }]).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
                             if (found && found[0]) {
                                 newreturns.data = found;
                                 callback(newreturns);
@@ -241,10 +241,10 @@ module.exports = {
         });
     },
     //Findlimited
-    findone: function(data, callback) {
+    findone: function (data, callback) {
         if (data.user && data.user != "") {
             var user = sails.ObjectID(data.user);
-            sails.query(function(err, db) {
+            sails.query(function (err, db) {
                 if (err) {
                     console.log(err);
                     callback({
@@ -257,7 +257,7 @@ module.exports = {
                         "billing._id": sails.ObjectID(data._id)
                     }, {
                         "billing.$": 1
-                    }).toArray(function(err, data2) {
+                    }).toArray(function (err, data2) {
                         if (data2 && data2[0] && data2[0].billing && data2[0].billing[0]) {
                             callback(data2[0].billing[0]);
                             db.close();
@@ -284,10 +284,10 @@ module.exports = {
             });
         }
     },
-    find: function(data, callback) {
+    find: function (data, callback) {
         if (data.user && data.user != "") {
             var user = sails.ObjectID(data.user);
-            sails.query(function(err, db) {
+            sails.query(function (err, db) {
                 if (err) {
                     console.log(err);
                     callback({
@@ -314,7 +314,7 @@ module.exports = {
                         $project: {
                             billing: 1
                         }
-                    }]).toArray(function(err, data2) {
+                    }]).toArray(function (err, data2) {
                         if (data2 && data2[0] && data2[0].billing && data2[0].billing[0]) {
                             callback(data2);
                             db.close();
