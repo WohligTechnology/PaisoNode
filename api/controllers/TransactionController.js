@@ -7,17 +7,13 @@
 
 module.exports = {
     save: function (req, res) {
-        if (req.body._id) {
-            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-                user();
-            } else {
-                res.json({
-                    value: "false",
-                    comment: "Transaction-id is incorrect"
-                });
-            }
-        } else {
+        if (req.body.to && req.body.to != "" && sails.ObjectID.isValid(req.body.to)) {
             user();
+        } else {
+            res.json({
+                value: "false",
+                comment: "Transaction-id is incorrect"
+            });
         }
 
         function user() {

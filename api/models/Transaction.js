@@ -1,5 +1,9 @@
 module.exports = {
     save: function (data, callback) {
+        data.timestamp = new Date();
+        data.from = sails.ObjectID(data.from);
+        if(data.to)
+            data.to = sails.ObjectID(data.to);
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
@@ -214,7 +218,7 @@ module.exports = {
             if (db) {
                 db.collection("transaction").find({
                     type: data.type,
-                    status:data.status
+                    status: data.status
                 }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);
