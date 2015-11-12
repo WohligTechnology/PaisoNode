@@ -2,7 +2,8 @@ module.exports = {
     save: function (data, callback) {
         data.timestamp = new Date();
         data.from = sails.ObjectID(data.from);
-        if(data.to)
+        data.status = "pending";
+        if (data.to)
             data.to = sails.ObjectID(data.to);
         sails.query(function (err, db) {
             if (err) {
