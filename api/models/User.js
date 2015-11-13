@@ -1,10 +1,10 @@
 // var insertdata = {};
 // var request = require('request');
 module.exports = {
-    adminlogin: function(data, callback) {
+    adminlogin: function (data, callback) {
         if (data.password) {
             data.password = sails.md5(data.password);
-            sails.query(function(err, db) {
+            sails.query(function (err, db) {
                 if (db) {
                     db.collection('user').find({
                         email: data.email,
@@ -13,7 +13,7 @@ module.exports = {
                     }, {
                         password: 0,
                         forgotpassword: 0
-                    }).toArray(function(err, found) {
+                    }).toArray(function (err, found) {
                         if (err) {
                             callback({
                                 value: "false"
@@ -45,11 +45,15 @@ module.exports = {
             });
         }
     },
-    save: function(data, callback) {
+    save: function (data, callback) {
         if (data.password && data.password != "") {
             data.password = sails.md5(data.password);
         }
-        sails.query(function(err, db) {
+        data.referral = data.mobile;
+        data.walletLimit = 10000;
+        console.log(data);
+        
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -60,7 +64,7 @@ module.exports = {
                 if (!data._id) {
                     db.collection("user").find({
                         mobile: data.mobile
-                    }).toArray(function(err, data2) {
+                    }).toArray(function (err, data2) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -76,7 +80,8 @@ module.exports = {
                             db.close();
                         } else {
                             data._id = sails.ObjectID();
-                            db.collection('user').insert(data, function(err, created) {
+                            data.balance=100;
+                            db.collection('user').insert(data, function (err, created) {
                                 if (err) {
                                     console.log(err);
                                     callback({
@@ -107,7 +112,7 @@ module.exports = {
                         _id: user
                     }, {
                         $set: data
-                    }, function(err, updated) {
+                    }, function (err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -138,8 +143,8 @@ module.exports = {
             }
         });
     },
-    find: function(data, callback) {
-        sails.query(function(err, db) {
+    find: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -147,7 +152,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("user").find().toArray(function(err, found) {
+                db.collection("user").find().toArray(function (err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -168,13 +173,13 @@ module.exports = {
         });
     },
     //Findlimited
-    findlimited: function(data, callback) {
+    findlimited: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
-        sails.query(function(err, db) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -189,7 +194,7 @@ module.exports = {
                         mobile: {
                             '$regex': check
                         }
-                    }, function(err, number) {
+                    }, function (err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -214,7 +219,7 @@ module.exports = {
                             mobile: {
                                 '$regex': check
                             }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
                             if (err) {
                                 callback({
                                     value: false
@@ -238,15 +243,15 @@ module.exports = {
             }
         });
     },
-    login: function(data, callback) {
+    login: function (data, callback) {
         data.password = sails.md5(data.password);
-        sails.query(function(err, db) {
+        sails.query(function (err, db) {
             db.collection('user').find({
                 mobile: data.mobile,
                 password: data.password
             }, {
                 password: 0
-            }).toArray(function(err, found) {
+            }).toArray(function (err, found) {
                 if (err) {
                     callback({
                         value: false
@@ -263,7 +268,7 @@ module.exports = {
                             $set: {
                                 forgotpassword: ""
                             }
-                        }, function(err, updated) {
+                        }, function (err, updated) {
                             if (err) {
                                 console.log(err);
                                 db.close();
@@ -281,7 +286,7 @@ module.exports = {
                     }, {
                         password: 0,
                         forgotpassword: 0
-                    }).toArray(function(err, found) {
+                    }).toArray(function (err, found) {
                         if (err) {
                             callback({
                                 value: false
@@ -298,7 +303,7 @@ module.exports = {
                                     forgotpassword: "",
                                     password: data.password
                                 }
-                            }, function(err, updated) {
+                            }, function (err, updated) {
                                 if (err) {
                                     console.log(err);
                                     db.close();
@@ -319,8 +324,8 @@ module.exports = {
         });
     },
     //Findlimited
-    findone: function(data, callback) {
-        sails.query(function(err, db) {
+    findone: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -330,7 +335,7 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     _id: sails.ObjectID(data._id)
-                }).toArray(function(err, data2) {
+                }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -352,8 +357,8 @@ module.exports = {
             }
         });
     },
-    delete: function(data, callback) {
-        sails.query(function(err, db) {
+    delete: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -362,7 +367,7 @@ module.exports = {
             }
             db.collection('user').remove({
                 _id: sails.ObjectID(data._id)
-            }, function(err, deleted) {
+            }, function (err, deleted) {
                 if (deleted) {
                     callback({
                         value: true
@@ -384,8 +389,8 @@ module.exports = {
             });
         });
     },
-    countusers: function(data, callback) {
-        sails.query(function(err, db) {
+    countusers: function (data, callback) {
+        sails.query(function (err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -393,7 +398,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("user").count({}, function(err, number) {
+                db.collection("user").count({}, function (err, number) {
                     if (number != null) {
                         callback(number);
                         db.close();

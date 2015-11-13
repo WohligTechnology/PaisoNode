@@ -5,6 +5,9 @@ module.exports = {
         data.status = "pending";
         if (data.to)
             data.to = sails.ObjectID(data.to);
+        if (data.type === "redeem")
+            data.vouchernumber = Math.floor(100000000 + Math.random() * 900000000000000);
+        console.log(data);
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
@@ -24,11 +27,52 @@ module.exports = {
                             });
                             db.close();
                         } else if (created) {
-                            callback({
-                                value: true,
-                                id: data._id
+                            var template_name = "paiso";
+                            var template_content = [{
+                                "name": "paiso",
+                                "content": "paiso"
+         }]
+                            var message = {
+                                "from_email": "gadarohan17@gmail.com",
+                                "from_name": "Rohan",
+                                "to": [{
+                                    "email": data.email,
+                                    "type": "to"
+        }],
+                                "global_merge_vars": [{
+                                    "name": "note",
+                                    "content": "Hiiiii"
+        }, {
+                                    "name": "brand",
+                                    "content": data.vendor
+         }, {
+                                    "name": "vouchernumber",
+                                    "content": data.vouchernumber
+         }, {
+                                    "name": "amount",
+                                    "content": data.amount
+         }, {
+                                    "name": "name",
+                                    "content": data.name
+         }, {
+                                    "name": "referral",
+                                    "content": data.referral
+         }]
+                            };
+                            sails.mandrill_client.messages.sendTemplate({
+                                "template_name": template_name,
+                                "template_content": template_content,
+                                "message": message
+                            }, function (result) {
+                                console.log(result);
+                                callback({
+                                    value: "true",
+                                    comment: "Mail Sent"
+                                });
+                                db.close();
+                            }, function (e) {
+                                callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
                             });
-                            db.close();
                         } else {
                             callback({
                                 value: false,
@@ -208,6 +252,41 @@ module.exports = {
             }
         });
     },
+    findByTypeUser: function (data, callback) {
+        console.log(data);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("transaction").find({
+                    type: data.type,
+                    from: sails.ObjectID(data.from)
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
     findByTypeStatus: function (data, callback) {
         sails.query(function (err, db) {
             if (err) {
@@ -305,6 +384,37 @@ module.exports = {
                     db.close();
                 }
             });
+        });
+    },
+    sendmail: function (data, callback) {
+        var template_name = "paiso";
+        var template_content = [{
+            "name": "paiso",
+            "content": "paiso"
+         }]
+        var message = {
+            "from_email": "gadarohan17@gmail.com",
+            "from_name": "Rohan",
+            "to": [{
+                "email": data.email,
+                "type": "to"
+        }],
+            "global_merge_vars": [{
+                "name": "note",
+                "content": "Hiiiii"
+        }]
+        };
+        sails.mandrill_client.messages.sendTemplate({
+            "template_name": template_name,
+            "template_content": template_content,
+            "message": message
+        }, function (result) {
+            callback({
+                value: "true",
+                comment: "Mail Sent"
+            });
+        }, function (e) {
+            callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
         });
     }
 };

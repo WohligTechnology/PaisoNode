@@ -86,6 +86,23 @@ module.exports = {
 
         }
     },
+    findByTypeUser: function (req, res) {
+        console.log(req.body);
+        if (req.body.type && req.body.from && req.body.type != ""  && req.body.from != "" && sails.ObjectID.isValid(req.body.from)) {
+            var print = function (data) {
+                res.json(data);
+            }
+            Transaction.findByTypeUser(req.body, print);
+        } else {
+            {
+                res.json({
+                    value: false,
+                    comment: "Enter the type of transaction"
+                })
+            }
+
+        }
+    },
     findByTypeStatus: function (req, res) {
         console.log(req.body);
         if (req.body.type && req.body.status && req.body.type != "" && req.body.status) {
@@ -101,6 +118,19 @@ module.exports = {
                 })
             }
 
+        }
+    },
+    sendmail: function (req, res) {
+        if (req.body.email && req.body.email != "") {
+            var print = function (data) {
+                res.json(data);
+            }
+            Transaction.sendmail(req.body, print);
+        } else {
+            res.json({
+                value: false,
+                comment: "Enter the type of transaction"
+            });
         }
     }
 };
