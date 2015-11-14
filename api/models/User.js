@@ -49,6 +49,7 @@ module.exports = {
         if (data.password && data.password != "") {
             data.password = sails.md5(data.password);
         }
+        data.referral="";
         data.referral = data.mobile;
         data.walletLimit = 10000;
         console.log(data);
