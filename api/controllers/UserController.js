@@ -76,6 +76,19 @@ module.exports = {
             });
         }
     },
+    findUserByMobile: function (req, res) {
+        if (req.body.mobile && req.body.mobile!= "") {
+            var print = function (data) {
+                res.json(data);
+            }
+            User.findUserByMobile(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "User-id is incorrect"
+            });
+        }
+    },
     findlimited: function (req, res) {
         if (req.body.pagesize && req.body.pagesize != "" && req.body.pagenumber && req.body.pagenumber != "") {
             function callback(data) {

@@ -49,11 +49,8 @@ module.exports = {
         if (data.password && data.password != "") {
             data.password = sails.md5(data.password);
         }
-        data.referral="";
-        data.referral = data.mobile;
-        
         console.log(data);
-        
+
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
@@ -81,7 +78,7 @@ module.exports = {
                             db.close();
                         } else {
                             data._id = sails.ObjectID();
-                            data.balance=100;
+                            data.balance = 100;
                             data.walletLimit = 10000;
                             db.collection('user').insert(data, function (err, created) {
                                 if (err) {
@@ -337,6 +334,40 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     _id: sails.ObjectID(data._id)
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2[0]);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
+    findUserByMobile: function (data, callback) {
+        console.log(data);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").find({
+                    mobile: data.mobile
                 }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);
