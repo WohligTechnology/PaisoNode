@@ -2,7 +2,6 @@ module.exports = {
     save: function (data, callback) {
         data.timestamp = new Date();
         data.from = sails.ObjectID(data.from);
-        data.status = "pending";
         if (data.to)
             data.to = sails.ObjectID(data.to);
         if (data.type === "redeem")
@@ -17,6 +16,8 @@ module.exports = {
             }
             if (db) {
                 if (!data._id) {
+
+                    data.status = "pending";
                     data._id = sails.ObjectID();
                     db.collection('transaction').insert(data, function (err, created) {
                         if (err) {
@@ -27,53 +28,62 @@ module.exports = {
                             });
                             db.close();
                         } else if (created) {
-                            var template_name = "paiso";
-                            var template_content = [{
-                                "name": "paiso",
-                                "content": "paiso"
+                            if (data.type == "redeem") {
+                                var template_name = "paiso";
+                                var template_content = [{
+                                    "name": "paiso",
+                                    "content": "paiso"
          }]
-                            var message = {
-                                "from_email": "gadarohan17@gmail.com",
-                                "from_name": "Rohan",
-                                "to": [{
-                                    "email": data.email,
-                                    "type": "to"
+                                var message = {
+                                    "from_email": "gadarohan17@gmail.com",
+                                    "from_name": "Rohan",
+                                    "to": [{
+                                        "email": data.email,
+                                        "type": "to"
         }],
-                                "global_merge_vars": [{
-                                    "name": "note",
-                                    "content": "Hiiiii"
+                                    "global_merge_vars": [{
+                                        "name": "note",
+                                        "content": "Hiiiii"
         }, {
-                                    "name": "brand",
-                                    "content": data.vendor
+                                        "name": "brand",
+                                        "content": data.vendor
          }, {
-                                    "name": "vouchernumber",
-                                    "content": data.vouchernumber
+                                        "name": "vouchernumber",
+                                        "content": data.vouchernumber
          }, {
-                                    "name": "amount",
-                                    "content": data.amount
+                                        "name": "amount",
+                                        "content": data.amount
          }, {
-                                    "name": "name",
-                                    "content": data.name
+                                        "name": "name",
+                                        "content": data.name
          }, {
-                                    "name": "referral",
-                                    "content": data.referral
+                                        "name": "referral",
+                                        "content": data.referral
          }]
-                            };
-                            sails.mandrill_client.messages.sendTemplate({
-                                "template_name": template_name,
-                                "template_content": template_content,
-                                "message": message
-                            }, function (result) {
-                                console.log(result);
+                                };
+                                sails.mandrill_client.messages.sendTemplate({
+                                    "template_name": template_name,
+                                    "template_content": template_content,
+                                    "message": message
+                                }, function (result) {
+                                    console.log(result);
+                                    callback({
+                                        value: "true",
+                                        comment: "Mail Sent"
+                                    });
+                                    db.close();
+                                }, function (e) {
+                                    callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                                });
+                            } else {
                                 callback({
-                                    value: "true",
-                                    comment: "Mail Sent"
+                                    value: true,
+                                    comment: "Transaction successful."
                                 });
                                 db.close();
-                            }, function (e) {
-                                callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
-                            });
+                            }
                         } else {
+
                             callback({
                                 value: false,
                                 comment: "Not created"

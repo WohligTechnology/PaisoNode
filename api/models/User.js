@@ -51,7 +51,7 @@ module.exports = {
         }
         data.referral="";
         data.referral = data.mobile;
-        data.walletLimit = 10000;
+        
         console.log(data);
         
         sails.query(function (err, db) {
@@ -82,6 +82,7 @@ module.exports = {
                         } else {
                             data._id = sails.ObjectID();
                             data.balance=100;
+                            data.walletLimit = 10000;
                             db.collection('user').insert(data, function (err, created) {
                                 if (err) {
                                     console.log(err);
