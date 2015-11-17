@@ -80,6 +80,7 @@ module.exports = {
                             data._id = sails.ObjectID();
                             data.balance = 100;
                             data.walletLimit = 10000;
+                            data.referral = [];
                             db.collection('user').insert(data, function (err, created) {
                                 if (err) {
                                     console.log(err);
