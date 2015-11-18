@@ -77,7 +77,20 @@ module.exports = {
         }
     },
     findUserByMobile: function (req, res) {
-        if (req.body.mobile && req.body.mobile!= "") {
+        if (req.body.mobile && req.body.mobile != "") {
+            var print = function (data) {
+                res.json(data);
+            }
+            User.findUserByMobile(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "User-id is incorrect"
+            });
+        }
+    },
+    findUserByReferralIDMobile: function (req, res) {
+        if (req.body.mobile && req.body.mobile != "" && req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function (data) {
                 res.json(data);
             }

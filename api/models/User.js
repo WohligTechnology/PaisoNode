@@ -391,6 +391,41 @@ module.exports = {
             }
         });
     },
+    findUserByReferralIDMobile: function (data, callback) {
+        console.log(data);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").find({
+                    mobile: data.mobile,
+                    "referral._id": sails.ObjectID(data._id)
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2[0]);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
     delete: function (data, callback) {
         sails.query(function (err, db) {
             if (err) {
