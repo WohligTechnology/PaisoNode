@@ -78,7 +78,7 @@ module.exports = {
                             db.close();
                         } else {
                             data._id = sails.ObjectID();
-                            data.balance = 100;
+                            data.balance = 0;
                             data.walletLimit = 10000;
                             data.referral = [];
                             db.collection('user').insert(data, function (err, created) {
@@ -392,7 +392,6 @@ module.exports = {
         });
     },
     findUserByReferralIDMobile: function (data, callback) {
-        console.log(data);
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
@@ -403,7 +402,9 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     mobile: data.mobile,
-                    "referral._id": sails.ObjectID(data._id)
+                    "referral._id": data._id
+                }, {
+                    "referral.$": 1
                 }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);

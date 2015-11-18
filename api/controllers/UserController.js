@@ -94,7 +94,7 @@ module.exports = {
             var print = function (data) {
                 res.json(data);
             }
-            User.findUserByMobile(req.body, print);
+            User.findUserByReferralIDMobile(req.body, print);
         } else {
             res.json({
                 value: "false",
