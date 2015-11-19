@@ -391,7 +391,7 @@ module.exports = {
             }
         });
     },
-    findUserByReferralIDMobile: function (data, callback) {
+    updateReferrer: function (data, callback) {
         if (data._id) {
             var myid = data._id;
         }

@@ -89,12 +89,12 @@ module.exports = {
             });
         }
     },
-    findUserByReferralIDMobile: function (req, res) {
+    updateReferrer: function (req, res) {
         if (req.body.mobile && req.body.mobile != "" && req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function (data) {
                 res.json(data);
             }
-            User.findUserByReferralIDMobile(req.body, print);
+            User.updateReferrer(req.body, print);
         } else {
             res.json({
                 value: "false",
