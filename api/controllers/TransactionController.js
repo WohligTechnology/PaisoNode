@@ -103,6 +103,23 @@ module.exports = {
 
         }
     },
+    findPassbookEntry: function (req, res) {
+        console.log(req.body);
+        if (req.body.type && req.body.from && req.body.passbook && req.body.type != ""  && req.body.from != "" && req.body.passbook != "" && sails.ObjectID.isValid(req.body.from)) {
+            var print = function (data) {
+                res.json(data);
+            }
+            Transaction.findPassbookEntry(req.body, print);
+        } else {
+            {
+                res.json({
+                    value: false,
+                    comment: "Enter the type of transaction"
+                })
+            }
+
+        }
+    },
     findByTypeStatus: function (req, res) {
         console.log(req.body);
         if (req.body.type && req.body.status && req.body.type != "" && req.body.status) {

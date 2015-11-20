@@ -16,8 +16,13 @@ module.exports = {
             }
             if (db) {
                 if (!data._id) {
-
+                    data.timestamp = new Date();
+                    if(data.type === "redeem"){
+                        data.validtill=new Date;
+                        data.validtill.setMonth(data.validtill.getMonth()+12);
+                    }
                     data.status = "pending";
+                    data.passbook = "available";
                     data._id = sails.ObjectID();
                     db.collection('transaction').insert(data, function (err, created) {
                         if (err) {
@@ -92,6 +97,8 @@ module.exports = {
                         }
                     });
                 } else {
+                    data.timestamp = new Date();
+
                     var transaction = sails.ObjectID(data._id);
                     delete data._id
                     db.collection('transaction').update({
@@ -275,6 +282,42 @@ module.exports = {
                 db.collection("transaction").find({
                     type: data.type,
                     from: sails.ObjectID(data.from)
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
+    findPassbookEntry: function (data, callback) {
+        console.log(data);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("transaction").find({
+                    type: data.type,
+                    from: sails.ObjectID(data.from),
+                    passbook: data.passbook
                 }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);
