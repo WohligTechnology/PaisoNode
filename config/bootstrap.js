@@ -26,8 +26,8 @@ module.exports.bootstrap = function(cb) {
         sails.moment = require('moment'),
         sails.fs = require('fs'),
         sails.mandrill = require('mandrill-api/mandrill'),
-        sails.mandrill_client = new sails.mandrill.Mandrill('1Fzz7SXh9MTaA5ySl4stQw'),
-        // sails.lwip = require('lwip'),
+        sails.mandrill_client = new sails.mandrill.Mandrill('mIzFLCrgdHg4H7MLWJ97_w'),
+         sails.lwip = require('lwip'),
         // Connection URL
         sails.url = 'mongodb://localhost:27017/paiso';
     sails.query = function(myfunc) {
