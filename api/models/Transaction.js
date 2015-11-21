@@ -39,8 +39,8 @@ module.exports = {
                                     "content": "paiso"
          }]
                                 var message = {
-                                    "from_email": "gadarohan17@gmail.com",
-                                    "from_name": "Rohan",
+                                    "from_email": "info@paiso.in",
+                                    "from_name": "PAiSO",
                                     "to": [{
                                         "email": data.email,
                                         "type": "to"
