@@ -62,7 +62,7 @@ module.exports = {
                                         "content": data.name
          }, {
                                         "name": "referral",
-                                        "content": data.referral
+                                        "content": data.mobile
          }]
                                 };
                                 sails.mandrill_client.messages.sendTemplate({
