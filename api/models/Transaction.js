@@ -1,6 +1,5 @@
 module.exports = {
     save: function (data, callback) {
-        data.timestamp = new Date();
         data.from = sails.ObjectID(data.from);
         if (data.to)
             data.to = sails.ObjectID(data.to);
@@ -17,9 +16,9 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data.timestamp = new Date();
-                    if(data.type === "redeem"){
-                        data.validtill=new Date;
-                        data.validtill.setMonth(data.validtill.getMonth()+12);
+                    if (data.type === "redeem") {
+                        data.validtill = new Date();
+                        data.validtill.setMonth(data.validtill.getMonth() + 12);
                     }
                     data.status = "pending";
                     data.passbook = "available";
@@ -318,6 +317,8 @@ module.exports = {
                     type: data.type,
                     from: sails.ObjectID(data.from),
                     passbook: data.passbook
+                }).sort({
+                    timestamp: -1
                 }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);

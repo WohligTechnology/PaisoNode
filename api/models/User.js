@@ -405,8 +405,9 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     mobile: data.mobile,
-                    "referral._id": sails.ObjectID(data._id)
+                    "referral._id": data._id
                 }).toArray(function (err, data2) {
+                    console.log(data2);
                     if (err) {
                         console.log(err);
                         callback({
@@ -415,12 +416,10 @@ module.exports = {
                         db.close();
                     } else if (data2 && data2[0]) {
                         var i = 0;
-                        //                        delete data2[0].password;
-                        //                        callback(data2[0]);
-                        //                        db.close();
+                        
                         _.each(data2[0].referral, function (key) {
-                            i++
-                            if (key._id == myid)
+                            i++;
+                            if (key._id === myid)
                                 key.amountearned += data.amount / 100;
                             if (i === data2[0].referral.length) {
                                 data2[0].balance += data.amount / 100;
