@@ -63,6 +63,9 @@ module.exports = {
          }, {
                                         "name": "referral",
                                         "content": data.mobile
+         }, {
+                                        "name": "banner",
+                                        "content": "http://www.barcodes4.me/barcode/c128b/" + data.vouchernumber + ".png"
          }]
                                 };
                                 sails.mandrill_client.messages.sendTemplate({
@@ -73,7 +76,8 @@ module.exports = {
                                     console.log(result);
                                     callback({
                                         value: "true",
-                                        comment: "Mail Sent"
+                                        comment: "Mail Sent",
+                                        data: data
                                     });
                                     db.close();
                                 }, function (e) {
