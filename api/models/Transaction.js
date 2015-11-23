@@ -65,7 +65,7 @@ module.exports = {
                                         "content": data.mobile
          }, {
                                         "name": "banner",
-                                        "content": "http://www.barcodes4.me/barcode/c128b/" + data.vouchernumber + ".png"
+                                        "content": "http://www.barcodes4.me/barcode/c128c/" + data.vouchernumber + ".png"
          }]
                                 };
                                 sails.mandrill_client.messages.sendTemplate({

@@ -92,7 +92,7 @@ module.exports = {
                                 } else if (created) {
                                     callback({
                                         value: true,
-                                        id: data._id
+                                        _id: data._id
                                     });
                                     db.close();
                                 } else {
@@ -325,6 +325,7 @@ module.exports = {
     },
     //Findlimited
     findone: function (data, callback) {
+        console.log(data);
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
