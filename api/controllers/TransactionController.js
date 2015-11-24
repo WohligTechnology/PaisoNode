@@ -86,6 +86,23 @@ module.exports = {
 
         }
     },
+    findByType: function (req, res) {
+        console.log(req.body);
+        if (req.body.type && req.body.type != "") {
+            var print = function (data) {
+                res.json(data);
+            }
+            Transaction.findByType(req.body, print);
+        } else {
+            {
+                res.json({
+                    value: false,
+                    comment: "Enter the type of transaction"
+                })
+            }
+
+        }
+    },
     findByTypeUser: function (req, res) {
         console.log(req.body);
         if (req.body.type && req.body.from && req.body.type != ""  && req.body.from != "" && sails.ObjectID.isValid(req.body.from)) {
@@ -143,6 +160,19 @@ module.exports = {
                 res.json(data);
             }
             Transaction.sendmail(req.body, print);
+        } else {
+            res.json({
+                value: false,
+                comment: "Enter the type of transaction"
+            });
+        }
+    },
+    sendSMS: function (req, res) {
+        if (req.body.mobile && req.body.mobile != "") {
+            var print = function (data) {
+                res.json(data);
+            }
+            Transaction.sendSMS(req.body, print);
         } else {
             res.json({
                 value: false,

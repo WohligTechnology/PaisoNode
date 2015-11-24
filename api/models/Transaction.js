@@ -139,6 +139,25 @@ module.exports = {
             }
         });
     },
+    sendSMS: function (data, callback) {
+        if (data.type === "otp") {
+            var options = {
+                host: 'bulksms.mysmsmantra.com',
+                port: 8080,
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + message.mobile + '&message=Dear User, welcome to PAiSO. Your OTP is ' + message.otp + '.'
+            };
+            console.log(options);
+            http.get(options, function (res) {
+
+            }).on('error', function (e) {
+
+            });
+        } else if (data.type === "redeem") {
+
+        } else if (data.type === "balance") {
+
+        }
+    },
     find: function (data, callback) {
         sails.query(function (err, db) {
             if (err) {
