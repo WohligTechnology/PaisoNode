@@ -1,3 +1,4 @@
+var gcm = require('node-gcm');
 module.exports = {
     save: function (data, callback) {
         data.from = sails.ObjectID(data.from);
@@ -73,13 +74,64 @@ module.exports = {
                                     "template_content": template_content,
                                     "message": message
                                 }, function (result) {
-                                    console.log(result);
-                                    callback({
-                                        value: "true",
-                                        comment: "Mail Sent",
-                                        data: data
+                                    var message = new gcm.Message({
+                                        collapseKey: 'demo',
+                                        priority: 'high',
+                                        contentAvailable: true,
+                                        delayWhileIdle: true,
+                                        timeToLive: 3,
+                                        restrictedPackageName: "somePackageName",
+                                        dryRun: true,
+                                        data: {
+                                            key1: 'message1',
+                                            key2: 'message2'
+                                        },
+                                        notification: {
+                                            title: "Hello, World",
+                                            icon: "ic_launcher",
+                                            body: "This is a notification that will be displayed ASAP."
+                                        }
                                     });
-                                    db.close();
+
+                                    message.addData('key1', 'msg1');
+
+                                    var regTokens = [data.deviceID.toString()];
+
+                                    // Set up the sender with you API key
+                                    var sender = new gcm.Sender('965431280304');
+
+                                    // Now the sender can be used to send messages
+                                    sender.send(message, {
+                                        registrationTokens: regTokens
+                                    }, function (err, response) {
+                                        if (err) console.error(err);
+                                        else {
+                                            console.log(result);
+                                            callback({
+                                                value: "true",
+                                                comment: "Mail Sent",
+                                                data: data
+                                            });
+                                            db.close();
+                                        }
+                                    });
+
+                                    // Send to a topic, with no retry this time
+                                    sender.sendNoRetry(message, {
+                                        topic: '/topics/global'
+                                    }, function (err, response) {
+                                        if (err) console.error(err);
+                                        else {
+                                            console.log(result);
+                                            callback({
+                                                value: "true",
+                                                comment: "Mail Sent",
+                                                data: data
+                                            });
+                                            db.close();
+                                        }
+                                    });
+
                                 }, function (e) {
                                     callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
                                 });
