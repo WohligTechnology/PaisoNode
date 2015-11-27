@@ -286,11 +286,13 @@
               }
           },
           notify: function (data, callback) {
-
-
-                            var message = new gcm.Message();
+              var message = new gcm.Message();
               message.addNotification('title', 'Alert!!!');
-
+                if(data.type === "referral"){
+                    
+                }
+              message.addNotification('body', 'Abnormal data access');
+              //              message.addNotification('icon', 'ic_launcher');
               //              message.addData('key1', 'msg1');
 
               var regTokens = [];
@@ -315,7 +317,7 @@
                   }
               });
 
-             
+
           },
           find: function (data, callback) {
               if (data.user && data.user != "") {

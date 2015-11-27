@@ -416,17 +416,32 @@ module.exports = {
                         });
                         db.close();
                     } else if (data2 && data2[0]) {
+                        delete data2[0].password;
                         var i = 0;
-                        
                         _.each(data2[0].referral, function (key) {
                             i++;
                             if (key._id === myid)
                                 key.amountearned += data.amount / 100;
                             if (i === data2[0].referral.length) {
                                 data2[0].balance += data.amount / 100;
+                                //                                User.save(data2[0], function (userrespo) {
+                                //                                    if (userrespo.value == true) {
+                                //                                        var usernoti = {
+                                //                                type: "referral",
+                                //                                            deviceid: data2[0].deviceid
+                                //                                        };
+                                //                                        Notification.notify(usernoti,callback)
+                                //                                    } else {
+                                //                                        callback({
+                                //                                            value: false
+                                //                                        });
+                                //                                    }
+                                //                                });
                                 User.save(data2[0], callback);
                             }
                         });
+
+
                     } else {
                         callback({
                             value: false,
