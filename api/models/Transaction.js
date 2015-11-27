@@ -1,3 +1,4 @@
+var http = require('http');
 module.exports = {
     save: function (data, callback) {
         data.from = sails.ObjectID(data.from);
@@ -144,18 +145,47 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + message.mobile + '&message=Dear User, welcome to PAiSO. Your OTP is ' + message.otp + '.'
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserWellcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
             };
-            console.log(options);
             http.get(options, function (res) {
-
+                callback({
+                    value: true
+                });
             }).on('error', function (e) {
-
+                callback({
+                    value: false
+                });
             });
         } else if (data.type === "redeem") {
-
+            var options = {
+                host: 'bulksms.mysmsmantra.com',
+                port: 8080,
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserWellcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
+            };
+            http.get(options, function (res) {
+                callback({
+                    value: true
+                });
+            }).on('error', function (e) {
+                callback({
+                    value: false
+                });
+            });
         } else if (data.type === "balance") {
-
+            var options = {
+                host: 'bulksms.mysmsmantra.com',
+                port: 8080,
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserWellcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
+            };
+            http.get(options, function (res) {
+                callback({
+                    value: true
+                });
+            }).on('error', function (e) {
+                callback({
+                    value: false
+                });
+            });
         }
     },
     find: function (data, callback) {

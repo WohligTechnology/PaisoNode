@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body._id) {
             if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
                 feed();
@@ -21,15 +21,15 @@ module.exports = {
         }
 
         function feed() {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             Notification.save(req.body, print);
         }
     },
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             Notification.delete(req.body, print);
@@ -40,15 +40,15 @@ module.exports = {
             });
         }
     },
-    find: function(req, res) {
+    find: function (req, res) {
         function callback(data) {
             res.json(data);
         };
         Notification.find(req.body, callback);
     },
-    findone: function(req, res) {
+    findone: function (req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             Notification.findone(req.body, print);
@@ -59,7 +59,7 @@ module.exports = {
             });
         }
     },
-    findlimited: function(req, res) {
+    findlimited: function (req, res) {
         if (req.body.pagesize && req.body.pagesize != "" && req.body.pagenumber && req.body.pagenumber != "") {
             function callback(data) {
                 res.json(data);
@@ -69,6 +69,19 @@ module.exports = {
             res.json({
                 value: false,
                 comment: "Please provide parameters"
+            });
+        }
+    },
+    notify: function (req, res) {
+        if (req.body.deviceid && req.body.deviceid != "") {
+            function callback(data) {
+                res.json(data);
+            };
+            Notification.notify(req.body, callback);
+        } else {
+            res.json({
+                value: false,
+                comment: "Please send a device ID"
             });
         }
     }
