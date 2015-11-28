@@ -393,6 +393,7 @@ module.exports = {
         });
     },
     updateReferrer: function (data, callback) {
+        console.log(data);
         if (data._id) {
             var myid = data._id;
         }
@@ -425,14 +426,15 @@ module.exports = {
                             if (i === data2[0].referral.length) {
                                 data2[0].balance += data.amount / 100;
                                 User.save(data2[0], function (userrespo) {
+                                    console.log(data);
                                     if (userrespo.value == true) {
                                         var usernoti = {
                                             type: "referral",
                                             deviceid: data2[0].deviceid,
-                                            amount: data.amount / 10,
+                                            amount: data.amount / 100,
                                             name: data.lastreferral
                                         };
-                                        Notification.notify(usernoti, callback)
+                                        Notification.notify(usernoti, callback);
                                     } else {
                                         callback({
                                             value: false
