@@ -429,7 +429,8 @@ module.exports = {
                                         var usernoti = {
                                             type: "referral",
                                             deviceid: data2[0].deviceid,
-                                            amount: data.amount / 10
+                                            amount: data.amount / 10,
+                                            name: data.lastreferral
                                         };
                                         Notification.notify(usernoti, callback)
                                     } else {

@@ -288,8 +288,8 @@
           notify: function (data, callback) {
               var message = new gcm.Message();
                 if(data.type === "referral"){
-                    message.addNotification('title','PAiSO referral');
-                    message.addNotification('body','tu refer hua');
+                    message.addNotification('title','PAiSO referrals');
+                    message.addNotification('body',data.name +'credited amount Rs.'+data.amount+'on referral');
                 }
 
               var regTokens = [];
