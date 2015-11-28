@@ -287,10 +287,17 @@
           },
           notify: function (data, callback) {
               var message = new gcm.Message();
-                if(data.type === "referral"){
-                    message.addNotification('title','PAiSO referrals');
-                    message.addNotification('body',data.name +'credited amount Rs.'+data.amount+'on referral');
-                }
+              if (data.type === "referral") {
+                  message.addNotification('title', 'Balance Added');
+                  message.addNotification('body', data.name + ' credited amount Rs.' + data.amount + ' on referral to you wallet.');
+              }
+              if (data.type === "sendmoney") {
+                  message.addNotification('title', data.name + 'sent you balance.');
+                  if (data.comment === undefined || data.comment === null || data.comment === "")
+                      message.addNotification('body', 'Rs. '+ data.amount + ' added to your wallet.');
+                  else
+                      message.addNotification('body','"'+data.comment+'." (Rs. ' + data.amount + ' have been added to your wallet.)');
+              }
 
               var regTokens = [];
               regTokens.push(data.deviceid);
@@ -310,8 +317,8 @@
                       console.log(response)
                       callback({
                           value: true,
-                          comment:response,
-                          data:data
+                          comment: response,
+                          data: data
                       });
                   }
               });
