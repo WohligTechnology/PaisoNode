@@ -310,7 +310,8 @@
                       console.log(response)
                       callback({
                           value: true,
-                          comment:response
+                          comment:response,
+                          data:data
                       });
                   }
               });
