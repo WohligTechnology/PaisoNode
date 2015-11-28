@@ -160,7 +160,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserWellcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserVoucher%20No'+data.vouchernumber+'for%20Rs'+data.amount+'spent%20on%20Brand'+data.brand+'Time~(Current%20Balance~).%20Valid Till~'
             };
             http.get(options, function (res) {
                 callback({
@@ -175,7 +175,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserWellcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear~Rs~have been%20added%20to%20your%20Paiso%20wallet.%20Share%20your%20referral%20ID~to%20get%20more%20balance'
             };
             http.get(options, function (res) {
                 callback({
