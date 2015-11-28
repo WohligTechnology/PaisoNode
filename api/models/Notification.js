@@ -287,13 +287,10 @@
           },
           notify: function (data, callback) {
               var message = new gcm.Message();
-              message.addNotification('title', 'Alert!!!');
                 if(data.type === "referral"){
-                    
+                    message.addNotification('title','PAiSO referral');
+                    message.addNotification('body','tu refer hua');
                 }
-              message.addNotification('body', 'Abnormal data access');
-              //              message.addNotification('icon', 'ic_launcher');
-              //              message.addData('key1', 'msg1');
 
               var regTokens = [];
               regTokens.push(data.deviceid);

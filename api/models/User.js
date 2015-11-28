@@ -424,20 +424,21 @@ module.exports = {
                                 key.amountearned += data.amount / 100;
                             if (i === data2[0].referral.length) {
                                 data2[0].balance += data.amount / 100;
-                                //                                User.save(data2[0], function (userrespo) {
-                                //                                    if (userrespo.value == true) {
-                                //                                        var usernoti = {
-                                //                                type: "referral",
-                                //                                            deviceid: data2[0].deviceid
-                                //                                        };
-                                //                                        Notification.notify(usernoti,callback)
-                                //                                    } else {
-                                //                                        callback({
-                                //                                            value: false
-                                //                                        });
-                                //                                    }
-                                //                                });
-                                User.save(data2[0], callback);
+                                User.save(data2[0], function (userrespo) {
+                                    if (userrespo.value == true) {
+                                        var usernoti = {
+                                            type: "referral",
+                                            deviceid: data2[0].deviceid,
+                                            amount: data.amount / 10
+                                        };
+                                        Notification.notify(usernoti, callback)
+                                    } else {
+                                        callback({
+                                            value: false
+                                        });
+                                    }
+                                });
+                                //                                User.save(data2[0], callback);
                             }
                         });
 
