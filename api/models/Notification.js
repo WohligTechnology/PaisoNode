@@ -309,7 +309,8 @@
                   } else {
                       console.log(response)
                       callback({
-                          value: true
+                          value: true,
+                          comment:response
                       });
                   }
               });
