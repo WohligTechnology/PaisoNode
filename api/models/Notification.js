@@ -289,7 +289,7 @@
               var message = new gcm.Message();
               if (data.type === "referral") {
                   message.addNotification('title', 'Balance Added');
-                  message.addNotification('body', data.name + ' credited amount Rs.' + data.amount + ' on referral to you wallet.');
+                  message.addNotification('body', data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.');
               }
               if (data.type === "sendmoney") {
                   message.addNotification('title', data.name + ' sent you balance.');
