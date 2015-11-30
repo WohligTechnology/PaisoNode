@@ -1,4 +1,5 @@
 var http = require('http');
+var moment = require('moment');
 module.exports = {
     save: function (data, callback) {
         data.from = sails.ObjectID(data.from);
@@ -75,12 +76,18 @@ module.exports = {
                                     "message": message
                                 }, function (result) {
                                     console.log(result);
-                                    callback({
-                                        value: "true",
-                                        comment: "Mail Sent",
-                                        data: data
+                                    var m_names = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+                                    data.validtill = moment(data.validtill).format("Do%20MMM,%20YYYY");
+                                    data.currentbalance=data.currentbalance.toFixed(2);
+                                    data.timestamp =moment(data.timestamp).format("Do%20MMM,%20YYYY%20HH:mm");
+                                    Transaction.sendSMS(data, function(transrespo){
+                                        if(transrespo.value == true){
+                                            callback({
+                                               value:true,
+                                                comment:"everything done successfully"
+                                            });
+                                        }
                                     });
-                                    db.close();
                                 }, function (e) {
                                     callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
                                 });
@@ -88,7 +95,7 @@ module.exports = {
                                 callback({
                                     value: true,
                                     comment: "Transaction successful.",
-                                    data:data
+                                    data: data
                                 });
                                 db.close();
                             }
@@ -161,7 +168,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserVoucher%20No'+data.vouchernumber+'for%20Rs'+data.amount+'spent%20on%20Brand'+data.brand+'Time~(Current%20Balance~).%20Valid Till~'
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear'+data.name+'Voucher%20No' + data.vouchernumber + 'for%20Rs' + data.amount + 'spent%20on%20Brand' + data.vendor + 'Time'+ data.timestamp+'(Current%20Balance'+data.currentbalance+').%20Valid%20Till'+data.validtill
             };
             http.get(options, function (res) {
                 callback({
