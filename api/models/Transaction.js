@@ -87,7 +87,8 @@ module.exports = {
                             } else {
                                 callback({
                                     value: true,
-                                    comment: "Transaction successful."
+                                    comment: "Transaction successful.",
+                                    data:data
                                 });
                                 db.close();
                             }

@@ -290,7 +290,7 @@
               if (data.type === "referral") {
                   if (data.new) {
                       message.addNotification('title', 'New Referral');
-                      message.addNotification('body', data.name + 'signed up on PAiSO with your referral ID.');
+                      message.addNotification('body', data.name + ' signed up on PAiSO with your referral ID. Keep sharing to get more and more balance');
                   } else {
                       message.addNotification('title', 'Balance Added');
                       message.addNotification('body', data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.');
