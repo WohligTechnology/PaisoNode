@@ -288,15 +288,20 @@
           notify: function (data, callback) {
               var message = new gcm.Message();
               if (data.type === "referral") {
-                  message.addNotification('title', 'Balance Added');
-                  message.addNotification('body', data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.');
+                  if (data.new) {
+                      message.addNotification('title', 'New Referral');
+                      message.addNotification('body', data.name + 'signed up on PAiSO with your referral ID.');
+                  } else {
+                      message.addNotification('title', 'Balance Added');
+                      message.addNotification('body', data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.');
+                  }
               }
               if (data.type === "sendmoney") {
                   message.addNotification('title', data.name + ' sent you balance.');
                   if (data.comment === undefined || data.comment === null || data.comment === "")
-                      message.addNotification('body', 'Rs. '+ data.amount + ' added to your wallet.');
+                      message.addNotification('body', 'Rs. ' + data.amount + ' added to your wallet.');
                   else
-                      message.addNotification('body','"'+data.comment+'." (Rs. ' + data.amount + ' have been added to your wallet)');
+                      message.addNotification('body', '"' + data.comment + '." (Rs. ' + data.amount + ' have been added to your wallet)');
               }
 
               var regTokens = [];
