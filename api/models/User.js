@@ -90,9 +90,11 @@ module.exports = {
                                     });
                                     db.close();
                                 } else if (created) {
+                                    delete data.password;
                                     callback({
                                         value: true,
-                                        _id: data._id
+                                        _id: data._id,
+                                        user:data
                                     });
                                     db.close();
                                 } else {
