@@ -77,14 +77,14 @@ module.exports = {
                                 }, function (result) {
                                     console.log(result);
                                     var m_names = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
-                                    data.validtill = moment(data.validtill).format("Do%20MMM,%20YYYY");
-                                    data.currentbalance=data.currentbalance.toFixed(2);
-                                    data.timestamp =moment(data.timestamp).format("Do%20MMM,%20YYYY%20HH:mm");
-                                    Transaction.sendSMS(data, function(transrespo){
-                                        if(transrespo.value == true){
+                                    data.validtill = moment(data.validtill).format("%20Do%20MMM,%20YYYY%20");
+                                    data.currentbalance = data.currentbalance.toFixed(2);
+                                    data.timestamp = moment(data.timestamp).format("%20Do%20MMM,%20YYYY%20HH:mm%20a%20");
+                                    Transaction.sendSMS(data, function (transrespo) {
+                                        if (transrespo.value == true) {
                                             callback({
-                                               value:true,
-                                                comment:"everything done successfully"
+                                                value: true,
+                                                comment: "everything done successfully"
                                             });
                                         }
                                     });
@@ -167,7 +167,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear'+data.name+'Voucher%20No' + data.vouchernumber + 'for%20Rs' + data.amount + 'spent%20on%20Brand' + data.vendor + 'Time'+ data.timestamp+'(Current%20Balance'+data.currentbalance+').%20Valid%20Till'+data.validtill
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Voucher%20No' + data.vouchernumber + 'for%20Rs' + data.amount + 'spent%20on%20Brand' + data.vendor + 'Time' + data.timestamp + '(Current%20Balance' + data.currentbalance + ').%20Valid%20Till' + data.validtill
             };
             http.get(options, function (res) {
                 callback({
@@ -330,6 +330,12 @@ module.exports = {
     },
     findByTypeUser: function (data, callback) {
         console.log(data);
+        if (data.from && data.from != "") {
+            data.from = sails.ObjectID(data.from);
+        }
+        if (data.to && data.to != "") {
+            data.to = sails.ObjectID(data.to);
+        }
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
@@ -340,7 +346,11 @@ module.exports = {
             if (db) {
                 db.collection("transaction").find({
                     type: data.type,
-                    from: sails.ObjectID(data.from)
+                    $or: [{
+                        from: data.from
+                    }, {
+                        to: data.to
+                    }]
                 }).toArray(function (err, data2) {
                     if (err) {
                         console.log(err);
@@ -349,7 +359,6 @@ module.exports = {
                         });
                         db.close();
                     } else if (data2 && data2[0]) {
-                        delete data2[0].password;
                         callback(data2);
                         db.close();
                     } else {
