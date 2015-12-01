@@ -71,7 +71,7 @@ module.exports = {
                                         "content": "http://www.barcodes4.me/barcode/c128c/" + data.vouchernumber + ".png"
          }, {
                                         "name": "validtill",
-                                        "content": data.validtill
+                                        "content": data.validtill.split("%20").join(" ")
          }]
                                 };
                                 sails.mandrill_client.messages.sendTemplate({
