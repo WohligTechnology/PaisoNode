@@ -89,17 +89,24 @@ module.exports = {
                                                 value: true,
                                                 comment: "everything done successfully"
                                             });
+                                            db.close();
                                         }
                                     });
+                                    
                                 }, function (e) {
                                     callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
                                 });
                             } else {
-                                callback({
-                                    value: true,
-                                    comment: "Transaction successful."
-                                });
-                                db.close();
+                                Transaction.sendSMS(data, function (transrespo) {
+                                        if (transrespo.value == true) {
+                                            callback({
+                                                value: true,
+                                                comment: "everything done successfully"
+                                            });
+                                            db.close();
+                                        }
+                                    });
+                                
                             }
                         } else {
 
@@ -185,7 +192,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear~Rs~have been%20added%20to%20your%20Paiso%20wallet.%20Share%20your%20referral%20ID~to%20get%20more%20balance'
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Rs' + data.amount + 'have%20been%20added%20to%20your%20Paiso%20wallet.%20Share%20your%20referral%20ID' + data.mobile + 'to%20get%20more%20balance'
             };
             http.get(options, function (res) {
                 callback({
