@@ -302,7 +302,7 @@
                       message.addNotification('body', 'Rs. ' + data.amount + ' added to your wallet.');
                   else
 //                      message.addNotification('body', '"' + data.comment + '." (Rs. ' + data.amount + ' have been added to your wallet)');
-                      message.addNotification('body', 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
+                      message.addNotification('body', 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."');
               }
 
               var regTokens = [];
