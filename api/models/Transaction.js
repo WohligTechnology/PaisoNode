@@ -35,6 +35,7 @@ module.exports = {
                             db.close();
                         } else if (created) {
                             if (data.type == "redeem") {
+                                data.validtill = moment(data.validtill).format("%20Do%20MMM,%20YYYY%20");
                                 var template_name = "paiso";
                                 var template_content = [{
                                     "name": "paiso",
@@ -68,6 +69,9 @@ module.exports = {
          }, {
                                         "name": "banner",
                                         "content": "http://www.barcodes4.me/barcode/c128c/" + data.vouchernumber + ".png"
+         }, {
+                                        "name": "validtill",
+                                        "content": data.validtill
          }]
                                 };
                                 sails.mandrill_client.messages.sendTemplate({
@@ -77,7 +81,6 @@ module.exports = {
                                 }, function (result) {
                                     console.log(result);
                                     var m_names = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
-                                    data.validtill = moment(data.validtill).format("%20Do%20MMM,%20YYYY%20");
                                     data.currentbalance = data.currentbalance.toFixed(2);
                                     data.timestamp = moment(data.timestamp).format("%20Do%20MMM,%20YYYY%20HH:mm%20a%20");
                                     Transaction.sendSMS(data, function (transrespo) {
