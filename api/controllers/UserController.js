@@ -89,6 +89,19 @@ module.exports = {
             });
         }
     },
+    validateMobile: function (req, res) {
+        if (req.body.mobile && req.body.mobile != "") {
+            var print = function (data) {
+                res.json(data);
+            }
+            User.validateMobile(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "User-id is incorrect"
+            });
+        }
+    },
     updateReferrer: function (req, res) {
         if (req.body.mobile && req.body.mobile != "" && req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function (data) {

@@ -158,11 +158,12 @@ module.exports = {
         });
     },
     sendSMS: function (data, callback) {
+        console.log(data);
         if (data.type === "otp") {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=DearUserWellcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear%20'+data.name+'%20Welcome%20to%20Paiso,%20Your%20OTP%20is'+ data.otp
             };
             http.get(options, function (res) {
                 callback({

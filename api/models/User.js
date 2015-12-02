@@ -94,7 +94,7 @@ module.exports = {
                                     callback({
                                         value: true,
                                         _id: data._id,
-                                        user:data
+                                        user: data
                                     });
                                     db.close();
                                 } else {
@@ -389,6 +389,50 @@ module.exports = {
                             comment: "No data found"
                         });
                         db.close();
+                    }
+                });
+            }
+        });
+    },
+    validateMobile: function (data, callback) {
+        data.otp = Math.floor(100000 + Math.random() * 900000);
+        console.log(data);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").find({
+                    mobile: data.mobile
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback({
+                            value: true
+                        });
+                        db.close();
+                    } else {
+                        data.type = "otp";
+                        Transaction.sendSMS(data, function (transrespo) {
+                            if (transrespo.value == true) {
+                                callback({
+                                    value: false,
+                                    comment: "No data found",
+                                    otp: data.otp
+                                });
+                                db.close();
+                            }
+                        });
+
                     }
                 });
             }
