@@ -193,7 +193,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Rs' + data.amount + 'have%20been%20added%20to%20your%20Paiso%20wallet.%20Share%20your%20referral%20ID' + data.mobile + 'to%20get%20more%20balance'
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Rs' + (data.amount*(110/100)) + 'have%20been%20added%20to%20your%20Paiso%20wallet.%20Share%20your%20referral%20ID' + data.mobile + 'to%20get%20more%20balance'
             };
             http.get(options, function (res) {
                 callback({
