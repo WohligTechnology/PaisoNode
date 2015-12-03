@@ -92,21 +92,21 @@ module.exports = {
                                             db.close();
                                         }
                                     });
-                                    
+
                                 }, function (e) {
                                     callback('A mandrill error occurred: ' + e.name + ' - ' + e.message);
                                 });
                             } else {
                                 Transaction.sendSMS(data, function (transrespo) {
-                                        if (transrespo.value == true) {
-                                            callback({
-                                                value: true,
-                                                comment: "everything done successfully"
-                                            });
-                                            db.close();
-                                        }
-                                    });
-                                
+                                    if (transrespo.value == true) {
+                                        callback({
+                                            value: true,
+                                            comment: "everything done successfully"
+                                        });
+                                        db.close();
+                                    }
+                                });
+
                             }
                         } else {
 
@@ -163,7 +163,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear%20'+data.name+'%20Welcome%20to%20Paiso,%20Your%20OTP%20is'+ data.otp
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Welcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
             };
             http.get(options, function (res) {
                 callback({
@@ -178,7 +178,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Voucher%20No' + data.vouchernumber + 'for%20Rs' + data.amount + 'spent%20on%20Brand' + data.vendor + 'Time' + data.timestamp + '(Current%20Balance' + data.currentbalance + ').%20Valid%20Till' + data.validtill
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Voucher%20No' + data.vouchernumber + 'for%20Rs' + data.amount + 'spent%20on%20Brand' + data.vendor + 'Time' + data.timestamp + 'Valid%20Till' + data.validtill + '(Current%20Balance' + data.currentbalance + ').'
             };
             http.get(options, function (res) {
                 callback({
@@ -193,7 +193,22 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Rs' + (data.amount*(110/100)) + 'have%20been%20added%20to%20your%20Paiso%20wallet.%20Share%20your%20referral%20ID' + data.mobile + 'to%20get%20more%20balance'
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + ',Rs' + (data.amount * (110 / 100)) + 'have%20been%20added%20to%20your%20Paiso%20wallet.Your%20current%20balance%20is%20Rs' + data.currentbalance
+            };
+            http.get(options, function (res) {
+                callback({
+                    value: true
+                });
+            }).on('error', function (e) {
+                callback({
+                    value: false
+                });
+            });
+        } else if (data.type === "sendmoney") {
+            var options = {
+                host: 'bulksms.mysmsmantra.com',
+                port: 8080,
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Your%20 balance%20of%20Rs' + data.amount + 'Has%20been%20successfully%20transferred%20User' + data.name + 'No' + data.mobile
             };
             http.get(options, function (res) {
                 callback({
