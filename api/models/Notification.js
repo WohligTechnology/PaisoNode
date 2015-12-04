@@ -1,4 +1,5 @@
       var gcm = require('node-gcm');
+      var apn = require('apn');
       module.exports = {
           save: function (data, callback) {
               if (data.user && data.user != "") {
@@ -286,48 +287,86 @@
               }
           },
           notify: function (data, callback) {
+              data.timestamp = new Date();
               var message = new gcm.Message();
+              var title = "";
+              var body = "";
+              data.read = false;
+              data.link = "";
               if (data.type === "referral") {
+                  data.link = "#/app/referral";
                   if (data.new) {
-                      message.addNotification('title', 'New Referral');
-                      message.addNotification('body', data.name + ' signed up on PAiSO with your referral ID. Keep sharing to get more and more balance');
+                      title = 'New Referral';
+                      body = data.name + ' signed up on PAiSO with your referral ID. Keep sharing to get more and more balance';
+
                   } else {
-                      message.addNotification('title', 'Balance Added');
-                      message.addNotification('body', data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.');
+                      title = 'Balance Added';
+                      body = data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.';
                   }
               }
               if (data.type === "sendmoney") {
-                  message.addNotification('title', data.name + ' sent you balance.');
+                  data.link = "#/app/wallet";
+                  title = data.name + ' sent you balance.';
                   if (data.comment === undefined || data.comment === null || data.comment === "")
-                      message.addNotification('body', 'Rs. ' + data.amount + ' added to your wallet.');
+                      body = 'Rs. ' + data.amount + ' added to your wallet.';
                   else
-//                      message.addNotification('body', '"' + data.comment + '." (Rs. ' + data.amount + ' have been added to your wallet)');
-                      message.addNotification('body', 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."');
+                      body = 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
               }
-
+              var options = {
+                  "cert": "certs/cert.pem",
+                  "key": "certs/key.pem",
+                  "passphrase": null,
+                  "gateway": "gateway.sandbox.push.apple.com",
+                  "port": 2195,
+                  "enhanced": true,
+                  "cacheLength": 5
+              };
+              var apnConnection = new apn.Connection(options);
+              var myDevice = new apn.Device(data.deviceid);
+              var note = new apn.Notification();
+              note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+              note.badge = 3;
+              note.sound = "ping.aiff";
+              note.alert = title + " " + body;
+              note.payload = {
+                  'messageFrom': 'PAiSO'
+              };
+              message.addNotification('title', title);
+              message.addNotification('body', body);
               var regTokens = [];
               regTokens.push(data.deviceid);
-              // Set up the sender with you API key
               var sender = new gcm.Sender('AIzaSyAEPTeKE18yipwH2k8Lx-Zr06UoBF95lbU');
-
-              // Now the sender can be used to send messages
-              sender.send(message, {
-                  registrationTokens: regTokens
-              }, function (err, response) {
-                  if (err) {
-                      console.log(err);
-                      callback({
-                          value: false
-                      });
-                  } else {
-                      console.log(response)
-                      callback({
-                          value: true,
-                          comment: response,
-                          data: data
-                      });
+              Notification.save(data, function (res) {
+                  console.log(res);
+                  if (res.value) {
+                      if (data.os === "ios") {
+                          apnConnection.pushNotification(note, myDevice);
+                          callback({
+                              value: true,
+                              comment: "ios"
+                          });
+                      } else if (data.os === "android") {
+                          sender.send(message, {
+                              registrationTokens: regTokens
+                          }, function (err, response) {
+                              if (err) {
+                                  console.log(err);
+                                  callback({
+                                      value: false
+                                  });
+                              } else {
+                                  console.log(response)
+                                  callback({
+                                      value: true,
+                                      comment: response,
+                                      data: data
+                                  });
+                              }
+                          });
+                      }
                   }
               });
+
 
 
           },

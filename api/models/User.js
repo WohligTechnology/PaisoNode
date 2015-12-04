@@ -476,7 +476,8 @@ module.exports = {
                                     if (userrespo.value == true) {
                                         var usernoti = {
                                             type: "referral",
-                                            deviceid: data2[0].deviceid,
+                                            deviceid: data2[0].notificationtoken.deviceid,
+                                            os: data2[0].notificationtoken.os,
                                             amount: data.amount / 100,
                                             name: data.lastreferral
                                         };

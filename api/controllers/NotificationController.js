@@ -73,7 +73,7 @@ module.exports = {
         }
     },
     notify: function (req, res) {
-        if (req.body.deviceid && req.body.deviceid != "") {
+        if (req.body.deviceid && req.body.deviceid != "" && req.body.user && req.body.deviceid != "" && sails.ObjectID.isValid(req.body.user)) {
             function callback(data) {
                 res.json(data);
             };
