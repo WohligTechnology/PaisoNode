@@ -85,11 +85,23 @@ module.exports = {
                                     data.timestamp = moment(data.timestamp).format("%20Do%20MMM,%20YYYY%20HH:mm%20a%20");
                                     Transaction.sendSMS(data, function (transrespo) {
                                         if (transrespo.value == true) {
-                                            callback({
-                                                value: true,
-                                                comment: "everything done successfully"
-                                            });
-                                            db.close();
+                                            if (data.hasoffer) {
+                                                Notification.notify(data, function (response) {
+                                                    if (response.value == true) {
+                                                        callback({
+                                                            value: true,
+                                                            comment: "everything done successfully"
+                                                        });
+                                                        db.close();
+                                                    }
+                                                });
+                                            } else {
+                                                callback({
+                                                    value: true,
+                                                    comment: "everything done successfully"
+                                                });
+                                                db.close();
+                                            }
                                         }
                                     });
 

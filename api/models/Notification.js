@@ -312,6 +312,12 @@
                   else
                       body = 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
               }
+              if (data.type === "redeem") {
+                  if (data.hasoffer) {
+                      title = 'Balance Added on cashback',
+                          body = 'Rs. ' + data.cashback + 'have been added to your wallet as cashback from ' + data.vendor;
+                  }
+              }
               var options = {
                   "cert": "certs/cert.pem",
                   "key": "certs/key.pem",
@@ -339,30 +345,37 @@
               Notification.save(data, function (res) {
                   console.log(res);
                   if (res.value) {
-                      if (data.os === "ios") {
-                          apnConnection.pushNotification(note, myDevice);
+                      if (data.hasoffer) {
                           callback({
                               value: true,
-                              comment: "ios"
+                              comment: "no push. notification saved."
                           });
-                      } else if (data.os === "android") {
-                          sender.send(message, {
-                              registrationTokens: regTokens
-                          }, function (err, response) {
-                              if (err) {
-                                  console.log(err);
-                                  callback({
-                                      value: false
-                                  });
-                              } else {
-                                  console.log(response)
-                                  callback({
-                                      value: true,
-                                      comment: response,
-                                      data: data
-                                  });
-                              }
-                          });
+                      } else {
+                          if (data.os === "ios") {
+                              apnConnection.pushNotification(note, myDevice);
+                              callback({
+                                  value: true,
+                                  comment: "ios"
+                              });
+                          } else if (data.os === "android") {
+                              sender.send(message, {
+                                  registrationTokens: regTokens
+                              }, function (err, response) {
+                                  if (err) {
+                                      console.log(err);
+                                      callback({
+                                          value: false
+                                      });
+                                  } else {
+                                      console.log(response)
+                                      callback({
+                                          value: true,
+                                          comment: response,
+                                          data: data
+                                      });
+                                  }
+                              });
+                          }
                       }
                   }
               });
