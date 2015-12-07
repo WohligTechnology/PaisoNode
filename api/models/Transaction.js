@@ -87,6 +87,7 @@ module.exports = {
                                         if (transrespo.value == true) {
                                             if (data.hasoffer) {
                                                 Notification.notify(data, function (response) {
+                                                    console.log(data);
                                                     if (response.value == true) {
                                                         callback({
                                                             value: true,

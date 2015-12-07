@@ -289,33 +289,35 @@
           notify: function (data, callback) {
               data.timestamp = new Date();
               var message = new gcm.Message();
-              var title = "";
-              var body = "";
+              data.title = "";
+              data.body = "";
               data.read = false;
               data.link = "";
               if (data.type === "referral") {
-                  data.link = "#/app/referral";
+                  data.link = "app.referral";
                   if (data.new) {
-                      title = 'New Referral';
-                      body = data.name + ' signed up on PAiSO with your referral ID. Keep sharing to get more and more balance';
+                      data.title = 'New Referral';
+                      data.body = data.name + ' signed up on PAiSO with your referral ID. Keep sharing to get more and more balance';
 
                   } else {
-                      title = 'Balance Added';
-                      body = data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.';
+                      data.title = 'Balance Added';
+                      data.body = data.name + ' credited amount Rs.' + data.amount + ' on referral to your wallet.';
                   }
               }
               if (data.type === "sendmoney") {
-                  data.link = "#/app/wallet";
-                  title = data.name + ' sent you balance.';
+                  data.link = "app.wallet";
+                  data.title = data.name + ' sent you balance.';
                   if (data.comment === undefined || data.comment === null || data.comment === "")
-                      body = 'Rs. ' + data.amount + ' added to your wallet.';
+                      data.body = 'Rs. ' + data.amount + ' added to your wallet.';
                   else
-                      body = 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
+                      data.body = 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
               }
               if (data.type === "redeem") {
                   if (data.hasoffer) {
-                      title = 'Balance Added on cashback',
-                          body = 'Rs. ' + data.cashback + 'have been added to your wallet as cashback from ' + data.vendor;
+                      data.link="app.wallet"
+                      data.title = 'Balance Added on cashback',
+                          data.body = 'Rs. ' + data.cashback + ' have been added to your wallet as cashback from ' + data.vendor;
+                      delete data._id;
                   }
               }
               var options = {
@@ -333,12 +335,12 @@
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
               note.badge = 3;
               note.sound = "ping.aiff";
-              note.alert = title + " " + body;
+              note.alert = data.title + " " + data.body;
               note.payload = {
                   'messageFrom': 'PAiSO'
               };
-              message.addNotification('title', title);
-              message.addNotification('body', body);
+              message.addNotification('title', data.title);
+              message.addNotification('body', data.body);
               var regTokens = [];
               regTokens.push(data.deviceid);
               var sender = new gcm.Sender('AIzaSyAEPTeKE18yipwH2k8Lx-Zr06UoBF95lbU');

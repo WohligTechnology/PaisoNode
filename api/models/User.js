@@ -327,7 +327,6 @@ module.exports = {
     },
     //Findlimited
     findone: function (data, callback) {
-        console.log(data);
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
