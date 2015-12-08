@@ -287,6 +287,7 @@
               }
           },
           notify: function (data, callback) {
+              console.log(data);
               data.timestamp = new Date();
               var message = new gcm.Message();
               data.title = "";
@@ -313,8 +314,9 @@
                       data.body = 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
               }
               if (data.type === "redeem") {
+                  console.log("has offer");
                   if (data.hasoffer) {
-                      data.link="app.wallet"
+                      data.link = "app.wallet"
                       data.title = 'Balance Added on cashback',
                           data.body = 'Rs. ' + data.cashback + ' have been added to your wallet as cashback from ' + data.vendor;
                       delete data._id;
@@ -330,7 +332,8 @@
                   "cacheLength": 5
               };
               var apnConnection = new apn.Connection(options);
-              var myDevice = new apn.Device(data.deviceid);
+              if (data.os === "ios")
+                  var myDevice = new apn.Device(data.deviceid);
               var note = new apn.Notification();
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
               note.badge = 3;
@@ -345,6 +348,7 @@
               regTokens.push(data.deviceid);
               var sender = new gcm.Sender('AIzaSyAEPTeKE18yipwH2k8Lx-Zr06UoBF95lbU');
               Notification.save(data, function (res) {
+                  console.log("is getting saved");
                   console.log(res);
                   if (res.value) {
                       if (data.hasoffer) {
