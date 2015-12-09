@@ -332,8 +332,9 @@
                   "cacheLength": 5
               };
               var apnConnection = new apn.Connection(options);
-              if (data.os === "ios")
+              if (data.os === "ios") {
                   var myDevice = new apn.Device(data.deviceid);
+              }
               var note = new apn.Notification();
               note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
               note.badge = 3;

@@ -480,7 +480,8 @@ module.exports = {
                                             deviceid: data2[0].notificationtoken.deviceid,
                                             os: data2[0].notificationtoken.os,
                                             amount: data.amount / 100,
-                                            name: data.lastreferral
+                                            name: data.lastreferral,
+                                            user:data2[0]._id
                                         };
                                         Notification.notify(usernoti, callback);
                                     } else {
