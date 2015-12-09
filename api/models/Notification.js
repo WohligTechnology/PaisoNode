@@ -286,7 +286,7 @@
                   });
               }
           },
-          notify: function (data, callback) {
+          notify: function (data, callback) {   
               console.log(data);
               data.timestamp = new Date();
               var message = new gcm.Message();
@@ -364,29 +364,29 @@
                                   value: true,
                                   comment: "ios"
                               });
-                          } else if (data.os === "android") 
+                          } else if (data.os === "android")
                               console.log(sender);
-                              console.log(message);
-                              sender.send(message, {
-                                  registrationTokens: regTokens
-                              }, function (err, response) {
-                                  if (err) {
-                                      console.log(err);
-                                      callback({
-                                          value: false
-                                      });
-                                  } else {
-                                      console.log(response)
-                                      callback({
-                                          value: true,
-                                          comment: response,
-                                          data: data
-                                      });
-                                  }
-                              });
-                          }
+                          console.log(message);
+                          sender.send(message, {
+                              registrationTokens: regTokens
+                          }, function (err, response) {
+                              if (err) {
+                                  console.log(err);
+                                  callback({
+                                      value: false
+                                  });
+                              } else {
+                                  console.log(response)
+                                  callback({
+                                      value: true,
+                                      comment: response,
+                                      data: data
+                                  });
+                              }
+                          });
                       }
                   }
+
               });
 
 
