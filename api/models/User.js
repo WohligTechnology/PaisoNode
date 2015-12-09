@@ -82,6 +82,7 @@ module.exports = {
                             data.walletLimit = 10000;
                             data.referral = [];
                             data.notification = [];
+                            data.favorite= [];
                             db.collection('user').insert(data, function (err, created) {
                                 if (err) {
                                     console.log(err);

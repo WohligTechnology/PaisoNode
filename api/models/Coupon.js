@@ -32,6 +32,17 @@ module.exports = {
                             });
                         } else {
                             data._id = sails.ObjectID();
+                            data.timestamp = new Date();
+                            data.used = false;
+                            data.validtill = new Date();
+                            if (data.day) {
+                                data.validtill.setDate(data.validtill.getDate() + data.day);
+                            }
+                            if (data.month) {
+                                data.validtill.setMonth(data.validtill.getMonth() + data.month);
+                            }
+                            delete data.day;
+                            delete data.month;
                             db.collection("coupon").insert(data, function (err, created) {
                                 if (err) {
                                     console.log(err);
@@ -214,6 +225,58 @@ module.exports = {
                         delete data2[0].password;
                         callback(data2[0]);
                         db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
+    findcode: function (data, callback) {
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("coupon").find({
+                    code: data.code
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        var timestamp = new Date();
+                        if (data.used) {
+                            callback({
+                                value: false,
+                                isUsed: true
+                            });
+                            db.close();
+                        } else {
+                            if (validtill) {
+                                if (timestamp > data.validtill) {
+                                    callback({
+                                        value: false,
+                                        isExpired: true
+                                    });
+                                    db.close();
+                                } else {
+                                    callback(data2[0]);
+                                    db.close();
+                                }
+                            }
+                        }
+
                     } else {
                         callback({
                             value: false,
