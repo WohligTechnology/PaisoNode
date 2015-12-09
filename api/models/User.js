@@ -483,6 +483,7 @@ module.exports = {
                                             name: data.lastreferral,
                                             user:data2[0]._id
                                         };
+                                        console.log(usernoti);
                                         Notification.notify(usernoti, callback);
                                     } else {
                                         callback({

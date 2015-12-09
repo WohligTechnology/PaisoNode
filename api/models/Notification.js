@@ -364,7 +364,9 @@
                                   value: true,
                                   comment: "ios"
                               });
-                          } else if (data.os === "android") {
+                          } else if (data.os === "android") 
+                              console.log(sender);
+                              console.log(message);
                               sender.send(message, {
                                   registrationTokens: regTokens
                               }, function (err, response) {
