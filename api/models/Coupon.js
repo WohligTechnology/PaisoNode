@@ -7,7 +7,18 @@
 
 module.exports = {
 
-    save: function (data, callback) {
+        save: function (data, callback) {
+           /* var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (var i = 0; i < 5; i++)
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+            return text;*/
+        
+        if (data.user) {
+            data.user = sails.ObjectID(data.user);
+        }
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
@@ -237,6 +248,7 @@ module.exports = {
         });
     },
     findcode: function (data, callback) {
+        console.log("here in backend fincode");
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
@@ -255,16 +267,18 @@ module.exports = {
                         });
                         db.close();
                     } else if (data2 && data2[0]) {
+                        console.log(data2)
                         var timestamp = new Date();
-                        if (data.used) {
+                        if (data2[0].used) {
                             callback({
                                 value: false,
                                 isUsed: true
                             });
                             db.close();
                         } else {
-                            if (validtill) {
-                                if (timestamp > data.validtill) {
+                            if (data2[0].validtill) {
+                                console.log("has validtill")
+                                if (timestamp > data2[0].validtill) {
                                     callback({
                                         value: false,
                                         isExpired: true
