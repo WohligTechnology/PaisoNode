@@ -482,7 +482,7 @@ module.exports = {
                                             os: data2[0].notificationtoken.os,
                                             amount: data.amount / 100,
                                             name: data.lastreferral,
-                                            user:data2[0]._id
+                                            user:data2._id
                                         };
                                         console.log(usernoti);
                                         Notification.notify(usernoti, callback);
