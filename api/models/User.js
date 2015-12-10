@@ -464,6 +464,7 @@ module.exports = {
                         });
                         db.close();
                     } else if (data2 && data2[0]) {
+                        var recieverid = data2[0]._id;
                         console.log(data2);
                         delete data2[0].password;
                         var i = 0;
@@ -482,7 +483,7 @@ module.exports = {
                                             os: data2[0].notificationtoken.os,
                                             amount: data.amount / 100,
                                             name: data.lastreferral,
-                                            user:data2._id
+                                            user:recieverid
                                         };
                                         console.log(usernoti);
                                         Notification.notify(usernoti, callback);
