@@ -322,6 +322,10 @@
                       delete data._id;
                   }
               }
+              if (data.type === "broadcast") {
+                  data.title = Btitle;
+                  data.body = Bbody;
+              }
               var options = {
                   "cert": "certs/cert.pem",
                   "key": "certs/key.pem",
@@ -455,8 +459,8 @@
                               deviceid: key.notificationtoken.deviceid,
                               os: key.notificationtoken.os,
                               user: key._id,
-                              title: data.title,
-                              body: data.title,
+                              Btitle: data.title,
+                              Bbody: data.body,
                               type: "broadcast"
                           };
                           Notification.notify(notifydata, function (notifyrespo) {
