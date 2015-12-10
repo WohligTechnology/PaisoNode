@@ -464,6 +464,7 @@ module.exports = {
                         });
                         db.close();
                     } else if (data2 && data2[0]) {
+                        console.log(data2);
                         delete data2[0].password;
                         var i = 0;
                         _.each(data2[0].referral, function (key) {
