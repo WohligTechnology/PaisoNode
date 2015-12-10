@@ -84,5 +84,11 @@ module.exports = {
                 comment: "Please send a device ID"
             });
         }
+    },
+    broadcast: function (req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Notification.broadcast(req.body, callback);
     }
 };

@@ -286,7 +286,7 @@
                   });
               }
           },
-          notify: function (data, callback) {   
+          notify: function (data, callback) {
               console.log(data);
               data.timestamp = new Date();
               var message = new gcm.Message();
@@ -386,11 +386,7 @@
                           });
                       }
                   }
-
               });
-
-
-
           },
           find: function (data, callback) {
               if (data.user && data.user != "") {
@@ -448,5 +444,37 @@
                       comment: "Please provide parameters"
                   });
               }
+          },
+          broadcast: function (data, callback) {
+              var i = 0;
+              User.find(data, function (resp) {
+                  if (resp.value != false) {
+                      var length = resp.length;
+                      _.each(resp, function (key) {
+                          var notifydata = {
+                              deviceid: key.notificationtoken.deviceid,
+                              os: key.notificationtoken.os,
+                              user: key._id,
+                              title: data.title,
+                              body: data.title,
+                              type: "broadcast"
+                          };
+                          Notification.notify(notifydata, function (notifyrespo) {
+                              i++;
+                              if (i == length) {
+                                  callback({
+                                      value: true,
+                                      comment: "broadcasted"
+                                  });
+                              }
+                          });
+                      });
+                  } else {
+                      callback({
+                          value: false,
+                          comment: "No data found"
+                      });
+                  }
+              });
           }
       };
