@@ -323,8 +323,8 @@
                   }
               }
               if (data.type === "broadcast") {
-                  data.title = Btitle;
-                  data.body = Bbody;
+                  data.title = data.Btitle;
+                  data.body = data.Bbody;
               }
               var options = {
                   "cert": "certs/cert.pem",
