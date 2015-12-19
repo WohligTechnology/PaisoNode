@@ -1,4 +1,5 @@
-uploadfile: function(req, res) {
+module.exports = {
+    uploadfile: function(req, res) {
         res.connection.setTimeout(200000);
         req.connection.setTimeout(200000);
         sails.query(function(err, db) {
@@ -131,3 +132,4 @@ uploadfile: function(req, res) {
             });
         }
     },
+};
