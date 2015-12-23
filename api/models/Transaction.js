@@ -222,7 +222,7 @@ module.exports = {
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Your%20 balance%20of%20Rs' + data.amount + 'Has%20been%20successfully%20transferred%20User' + data.name + 'No' + data.mobile
+                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Your%20balance%20of%20Rs' + data.amount + 'Has%20been%20successfully%20transferred%20User' + data.name + 'No' + data.mobile
             };
             http.get(options, function (res) {
                 callback({
