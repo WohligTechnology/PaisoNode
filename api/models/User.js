@@ -82,7 +82,7 @@ module.exports = {
                             data.walletLimit = 10000;
                             data.referral = [];
                             data.notification = [];
-                            data.favorite= [];
+                            data.favorite = [];
                             db.collection('user').insert(data, function (err, created) {
                                 if (err) {
                                     console.log(err);
@@ -327,6 +327,9 @@ module.exports = {
             });
         });
     },
+    logout: function (data, callback) {
+        //logout code here
+    },
     //Findlimited
     findone: function (data, callback) {
         sails.query(function (err, db) {
@@ -483,7 +486,7 @@ module.exports = {
                                             os: data2[0].notificationtoken.os,
                                             amount: data.amount / 100,
                                             name: data.lastreferral,
-                                            user:recieverid
+                                            user: recieverid
                                         };
                                         console.log(usernoti);
                                         Notification.notify(usernoti, callback);
