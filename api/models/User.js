@@ -328,7 +328,45 @@ module.exports = {
         });
     },
     logout: function (data, callback) {
-        //logout code here
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").find({
+                    _id: sails.ObjectID(data._id)
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        data2[0].notificationtoken = {};
+                        User.save(data2[0],function(resp){
+                            if(resp.value){
+                                callback({
+                                    value:true,
+                                    comment:"Removed notification token."
+                                });
+                            }
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
     },
     //Findlimited
     findone: function (data, callback) {

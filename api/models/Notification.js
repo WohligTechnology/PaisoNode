@@ -451,27 +451,33 @@
           },
           broadcast: function (data, callback) {
               var i = 0;
+              var k=0;
               User.find(data, function (resp) {
                   if (resp.value != false) {
                       var length = resp.length;
                       _.each(resp, function (key) {
-                          var notifydata = {
-                              deviceid: key.notificationtoken.deviceid,
-                              os: key.notificationtoken.os,
-                              user: key._id,
-                              Btitle: data.title,
-                              Bbody: data.body,
-                              type: "broadcast"
-                          };
-                          Notification.notify(notifydata, function (notifyrespo) {
-                              i++;
-                              if (i == length) {
-                                  callback({
-                                      value: true,
-                                      comment: "broadcasted"
-                                  });
-                              }
-                          });
+                          
+                          if (key.notificationtoken != undefined) {
+                              k++;
+                              var notifydata = {
+                                  deviceid: key.notificationtoken.deviceid,
+                                  os: key.notificationtoken.os,
+                                  user: key._id,
+                                  Btitle: data.title,
+                                  Bbody: data.body,
+                                  type: "broadcast"
+                              };
+                              Notification.notify(notifydata, function (notifyrespo) {
+                                  i++;
+                                  if (i == k) {
+                                      callback({
+                                          value: true,
+                                          comment: "broadcasted"
+                                      });
+                                  }
+                              });
+                          }
+                          
                       });
                   } else {
                       callback({
