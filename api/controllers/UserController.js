@@ -63,6 +63,46 @@ module.exports = {
         };
         User.adminlogin(req.body, callback);
     },
+    changepassword: function(req, res) {
+        if (req.body) {
+            if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+                var print = function(data) {
+                    res.json(data);
+                }
+                User.changepassword(req.body, print);
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "User-id is incorrect"
+                });
+            }
+        } else {
+            res.json({
+                value: "false",
+                comment: "Please provide parameters"
+            });
+        }
+    },
+    forgotpassword: function(req, res) {
+        if (req.body) {
+            if (req.body.mobile && req.body.mobile != "") {
+                var print = function(data) {
+                    res.json(data);
+                }
+                User.forgotpassword(req.body, print);
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "Please provide parameters"
+                });
+            }
+        } else {
+            res.json({
+                value: "false",
+                comment: "Please provide parameters"
+            });
+        }
+    },
     findone: function (req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function (data) {

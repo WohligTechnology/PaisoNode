@@ -327,6 +327,152 @@ module.exports = {
             });
         });
     },
+    changepassword: function(data, callback) {
+        if (data.password && data.password != "" && data.editpassword && data.editpassword != "") {
+            data.password = sails.md5(data.password);
+            var user = sails.ObjectID(data._id);
+            var newpass = sails.md5(data.editpassword);
+            sails.query(function(err, db) {
+                if (err) {
+                    console.log(err);
+                    callback({
+                        value: false,
+                        comment: "Error"
+                    });
+                } else if (db) {
+                    db.collection('user').update({
+                        "_id": user,
+                        "password": data.password
+                    }, {
+                        $set: {
+                            "password": newpass
+                        }
+                    }, function(err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        } else if (updated.result.nModified == 1 && updated.result.n == 1) {
+                            callback({
+                                value: true
+                            });
+                            db.close();
+                        } else if (updated.result.nModified != 1 && updated.result.n == 1) {
+                            callback({
+                                value: false,
+                                comment: "Same password"
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No data found"
+                            });
+                            db.close();
+                        }
+                    });
+                }
+            });
+        } else {
+            callback({
+                value: false,
+                comment: "Please provide all parameters"
+            });
+        }
+    },
+    forgotpassword: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection('user').find({
+                    mobile: data.mobile
+                }).toArray(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        var text = "";
+                        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                        for (var i = 0; i < 8; i++) {
+                            text += possible.charAt(Math.floor(Math.random() * possible.length));
+                        }
+                        var encrypttext = sails.md5(text);
+                        var user = sails.ObjectID(data2[0]._id);
+                        db.collection('user').update({
+                            mobile: data.mobile
+                        }, {
+                            $set: {
+                                forgotpassword: encrypttext
+                            }
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false
+                                });
+                                db.close();
+                            } else if (updated) {
+                                console.log("inmail");
+                                console.log(data2[0].email);
+                                var template_name = "newpassword";
+                                var template_content = [{
+                                    "name": "newpassword",
+                                    "content": "newpassword"
+                                }]
+                                var message = {
+                                    "from_email": "info@paiso.in",
+                                    "from_name": "PAiSO",
+                                    "to": [{
+                                        "email": data2[0].email,
+                                        "type": "to"
+                                    }],
+                                    "global_merge_vars": [{
+                                        "name": "password",
+                                        "content": text
+                                    }]
+                                };
+                                sails.mandrill_client.messages.sendTemplate({
+                                    "template_name": template_name,
+                                    "template_content": template_content,
+                                    "message": message
+                                }, function(result) {
+                                    callback({
+                                        value: true,
+                                        comment: "Mail Sent"
+                                    });
+                                    db.close();
+                                }, function(e) {
+                                    console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                                });
+                            } else {
+                                callback({
+                                    value: false
+                                });
+                                db.close();
+                            }
+                        });
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
     logout: function (data, callback) {
         sails.query(function (err, db) {
             if (err) {
