@@ -1,10 +1,8 @@
-// var insertdata = {};
-// var request = require('request');
 module.exports = {
-    adminlogin: function (data, callback) {
+    adminlogin: function(data, callback) {
         if (data.password) {
             data.password = sails.md5(data.password);
-            sails.query(function (err, db) {
+            sails.query(function(err, db) {
                 if (db) {
                     db.collection('user').find({
                         email: data.email,
@@ -13,10 +11,10 @@ module.exports = {
                     }, {
                         password: 0,
                         forgotpassword: 0
-                    }).toArray(function (err, found) {
+                    }).toArray(function(err, found) {
                         if (err) {
                             callback({
-                                value: "false"
+                                value: false
                             });
                             console.log(err);
                             db.close();
@@ -25,7 +23,7 @@ module.exports = {
                             db.close();
                         } else {
                             callback({
-                                value: "false",
+                                value: false,
                                 comment: "No data found"
                             });
                             db.close();
@@ -35,7 +33,7 @@ module.exports = {
                 if (err) {
                     console.log(err);
                     callback({
-                        value: "false"
+                        value: false
                     });
                 }
             });
@@ -45,13 +43,11 @@ module.exports = {
             });
         }
     },
-    save: function (data, callback) {
+    save: function(data, callback) {
         if (data.password && data.password != "") {
             data.password = sails.md5(data.password);
         }
-        console.log(data);
-
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -62,7 +58,7 @@ module.exports = {
                 if (!data._id) {
                     db.collection("user").find({
                         mobile: data.mobile
-                    }).toArray(function (err, data2) {
+                    }).toArray(function(err, data2) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -83,7 +79,8 @@ module.exports = {
                             data.referral = [];
                             data.notification = [];
                             data.favorite = [];
-                            db.collection('user').insert(data, function (err, created) {
+                            data.card = []
+                            db.collection('user').insert(data, function(err, created) {
                                 if (err) {
                                     console.log(err);
                                     callback({
@@ -93,11 +90,36 @@ module.exports = {
                                     db.close();
                                 } else if (created) {
                                     delete data.password;
-                                    callback({
-                                        value: true,
-                                        _id: data._id,
-                                        user: data
-                                    });
+                                    if (!data.referrer) {
+                                        callback({
+                                            value: true,
+                                            _id: data._id,
+                                            user: data
+                                        });
+                                    } else {
+                                        User.findUserByMobile({
+                                            mobile: data.referrer
+                                        }, function(response) {
+                                            console.log(response);
+                                            var referrerUser = response;
+                                            if (referrerUser.referral) {
+                                                referrerUser.referral.push({
+                                                    _id: data._id,
+                                                    amountearned: 0
+                                                });
+                                                User.save(referrerUser, function(responseReferrer) {
+                                                    if (responseReferrer.value == true) {
+                                                        callback({
+                                                            value: true,
+                                                            _id: data._id,
+                                                            user: data
+                                                        });
+                                                    }
+                                                })
+                                            }
+                                        });
+                                    }
+
                                     db.close();
                                 } else {
                                     callback({
@@ -116,7 +138,7 @@ module.exports = {
                         _id: user
                     }, {
                         $set: data
-                    }, function (err, updated) {
+                    }, function(err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -147,8 +169,8 @@ module.exports = {
             }
         });
     },
-    find: function (data, callback) {
-        sails.query(function (err, db) {
+    find: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -156,7 +178,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("user").find().toArray(function (err, found) {
+                db.collection("user").find().toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -177,13 +199,13 @@ module.exports = {
         });
     },
     //Findlimited
-    findlimited: function (data, callback) {
+    findlimited: function(data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -198,7 +220,7 @@ module.exports = {
                         mobile: {
                             '$regex': check
                         }
-                    }, function (err, number) {
+                    }, function(err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -223,7 +245,7 @@ module.exports = {
                             mobile: {
                                 '$regex': check
                             }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
                                     value: false
@@ -247,15 +269,15 @@ module.exports = {
             }
         });
     },
-    login: function (data, callback) {
+    login: function(data, callback) {
         data.password = sails.md5(data.password);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             db.collection('user').find({
                 mobile: data.mobile,
                 password: data.password
             }, {
                 password: 0
-            }).toArray(function (err, found) {
+            }).toArray(function(err, found) {
                 if (err) {
                     callback({
                         value: false
@@ -272,7 +294,7 @@ module.exports = {
                             $set: {
                                 forgotpassword: ""
                             }
-                        }, function (err, updated) {
+                        }, function(err, updated) {
                             if (err) {
                                 console.log(err);
                                 db.close();
@@ -290,7 +312,7 @@ module.exports = {
                     }, {
                         password: 0,
                         forgotpassword: 0
-                    }).toArray(function (err, found) {
+                    }).toArray(function(err, found) {
                         if (err) {
                             callback({
                                 value: false
@@ -307,7 +329,7 @@ module.exports = {
                                     forgotpassword: "",
                                     password: data.password
                                 }
-                            }, function (err, updated) {
+                            }, function(err, updated) {
                                 if (err) {
                                     console.log(err);
                                     db.close();
@@ -423,8 +445,6 @@ module.exports = {
                                 });
                                 db.close();
                             } else if (updated) {
-                                console.log("inmail");
-                                console.log(data2[0].email);
                                 var template_name = "newpassword";
                                 var template_content = [{
                                     "name": "newpassword",
@@ -473,8 +493,8 @@ module.exports = {
             }
         });
     },
-    logout: function (data, callback) {
-        sails.query(function (err, db) {
+    logout: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -484,7 +504,7 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     _id: sails.ObjectID(data._id)
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -494,11 +514,11 @@ module.exports = {
                     } else if (data2 && data2[0]) {
                         delete data2[0].password;
                         data2[0].notificationtoken = {};
-                        User.save(data2[0],function(resp){
-                            if(resp.value){
+                        User.save(data2[0], function(resp) {
+                            if (resp.value) {
                                 callback({
-                                    value:true,
-                                    comment:"Removed notification token."
+                                    value: true,
+                                    comment: "Removed notification token."
                                 });
                             }
                         });
@@ -515,8 +535,8 @@ module.exports = {
         });
     },
     //Findlimited
-    findone: function (data, callback) {
-        sails.query(function (err, db) {
+    findone: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -526,7 +546,7 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     _id: sails.ObjectID(data._id)
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -548,9 +568,8 @@ module.exports = {
             }
         });
     },
-    findUserByMobile: function (data, callback) {
-        console.log(data);
-        sails.query(function (err, db) {
+    findUserByMobile: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -560,7 +579,7 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     mobile: data.mobile
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -582,10 +601,9 @@ module.exports = {
             }
         });
     },
-    validateMobile: function (data, callback) {
+    validateMobile: function(data, callback) {
         data.otp = Math.floor(100000 + Math.random() * 900000);
-        console.log(data);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -595,7 +613,7 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     mobile: data.mobile
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -610,7 +628,7 @@ module.exports = {
                         db.close();
                     } else {
                         data.type = "otp";
-                        Transaction.sendSMS(data, function (transrespo) {
+                        Transaction.sendSMS(data, function(transrespo) {
                             if (transrespo.value == true) {
                                 callback({
                                     value: false,
@@ -626,12 +644,11 @@ module.exports = {
             }
         });
     },
-    updateReferrer: function (data, callback) {
-        console.log(data);
+    updateReferrer: function(data, callback) {
         if (data._id) {
             var myid = data._id;
         }
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -642,8 +659,7 @@ module.exports = {
                 db.collection("user").find({
                     mobile: data.mobile,
                     "referral._id": data._id
-                }).toArray(function (err, data2) {
-                    console.log(data2);
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -652,17 +668,15 @@ module.exports = {
                         db.close();
                     } else if (data2 && data2[0]) {
                         var recieverid = data2[0]._id;
-                        console.log(data2);
                         delete data2[0].password;
                         var i = 0;
-                        _.each(data2[0].referral, function (key) {
+                        _.each(data2[0].referral, function(key) {
                             i++;
                             if (key._id === myid)
                                 key.amountearned += data.amount / 100;
                             if (i === data2[0].referral.length) {
                                 data2[0].balance += data.amount / 100;
-                                User.save(data2[0], function (userrespo) {
-                                    console.log(data);
+                                User.save(data2[0], function(userrespo) {
                                     if (userrespo.value == true) {
                                         var usernoti = {
                                             type: "referral",
@@ -672,7 +686,6 @@ module.exports = {
                                             name: data.lastreferral,
                                             user: recieverid
                                         };
-                                        console.log(usernoti);
                                         Notification.notify(usernoti, callback);
                                     } else {
                                         callback({
@@ -680,11 +693,8 @@ module.exports = {
                                         });
                                     }
                                 });
-                                //                                User.save(data2[0], callback);
                             }
                         });
-
-
                     } else {
                         callback({
                             value: false,
@@ -696,8 +706,8 @@ module.exports = {
             }
         });
     },
-    delete: function (data, callback) {
-        sails.query(function (err, db) {
+    delete: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -706,7 +716,7 @@ module.exports = {
             }
             db.collection('user').remove({
                 _id: sails.ObjectID(data._id)
-            }, function (err, deleted) {
+            }, function(err, deleted) {
                 if (deleted) {
                     callback({
                         value: true
@@ -728,8 +738,8 @@ module.exports = {
             });
         });
     },
-    countusers: function (data, callback) {
-        sails.query(function (err, db) {
+    countusers: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -737,7 +747,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("user").count({}, function (err, number) {
+                db.collection("user").count({}, function(err, number) {
                     if (number != null) {
                         callback(number);
                         db.close();
@@ -756,5 +766,335 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+    //////////////////////////////////////////////SHMART
+    //////////////////////////////////////////////SIGNUP
+    register: function(data, callback) {
+        if (data.referrer && data.referrer != "") {
+            sails.request.post({
+                url: sails.shmart + "customers/getConsumerID",
+                json: {
+                    mobile_no: data.referrer,
+                },
+                headers: {
+                    Authorization: 'Basic ' + sails.auth,
+                    'Content-Type': 'application/json'
+                }
+            }, function(err, http, body) {
+                if (err) {
+                    console.log(err);
+                    callback({
+                        value: false,
+                        comment: err
+                    });
+                } else {
+                    if (body.status == "success") {
+                        callme();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: body
+                        });
+                    }
+                }
+            });
+        } else {
+            callme();
+        }
+
+        function callme() {
+            sails.request.post({
+                url: sails.shmart + "customers/create",
+                json: {
+                    mobileNo: data.mobile,
+                    email: data.email,
+                    name_of_customer: data.name
+                },
+                headers: {
+                    Authorization: 'Basic ' + sails.auth,
+                    'Content-Type': 'application/json'
+                }
+            }, function(err, http, body) {
+                if (err) {
+                    console.log(err);
+                    callback({
+                        value: false,
+                        comment: err
+                    });
+                } else {
+                    if (body.status == "success") {
+                        sails.request.post({
+                            url: sails.shmart + "customers/generateotp",
+                            json: {
+                                consumer_id: body.consumer_id,
+                            },
+                            headers: {
+                                Authorization: 'Basic ' + sails.auth,
+                                'Content-Type': 'application/json'
+                            }
+                        }, function(err, http, body2) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: err
+                                });
+                            } else {
+                                if (body2.status == "success") {
+                                    body2.consumer_id = body.consumer_id;
+                                    callback({
+                                        value: true,
+                                        comment: body2
+                                    });
+                                } else {
+                                    callback({
+                                        value: false,
+                                        comment: body2
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        callback({
+                            value: false,
+                            comment: body
+                        });
+                    }
+                }
+            });
+        }
+    },
+    validateOTP: function(data, callback) {
+        sails.request.post({
+            url: sails.shmart + "customers/activate",
+            json: {
+                consumer_id: data.consumer,
+                otp: data.otp
+            },
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
+    //////////////////////////////////////////////TRANSACTION
+    saveCard: function(data, callback) {
+        sails.request.get({
+            url: "http://localhost/CallEncrypt?user=" + data
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                callback(sails.shmart + "cards/create/merchant_id/" + sails.merchantID + "/data/" + body);
+            }
+        });
+    },
+    addToWallet: function(data, callback) {
+        var possible = "0123456789";
+        data.request = "";
+        for (var i = 0; i < 11; i++) {
+            data.request += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        sails.request.post({
+            url: sails.shmart + "funds/create_saved_card_payment",
+            json: {
+                consumer_id: data.consumer,
+                amount: data.amount,
+                email: data.email,
+                response_url: data.url,
+                merchant_refID: data.request,
+                user_card_unique_token: data.token,
+                cvv: data.cvv
+            },
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
+    readMoney: function(data, callback) {
+        sails.request.get({
+            url: sails.shmart + "balances/general/consumer_id/" + data.consumer,
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                body = JSON.parse(body);
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
+    removeMoney: function(data, callback) {
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        data.ref = "";
+        for (var i = 0; i < 9; i++) {
+            data.ref += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        sails.request.post({
+            url: sails.shmart + "debits/general",
+            json: {
+                consumer_id: data.consumer,
+                mobileNo: data.mobile,
+                total_amount: data.amount,
+                email: data.email,
+                merchant_refID: data.ref,
+                otp: data.otp,
+            },
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
+    sendMoney: function(data, callback) {
+        sails.request.post({
+            url: sails.shmart + "wallet_transfers/",
+            json: {
+                consumer_id: data.consumer,
+                friend_mobileNo: data.mobile,
+                friend_email: data.email,
+                amount: data.amount,
+                message: data.message,
+                friend_name: data.name
+            },
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
+    generateOtpForDebit: function(data, callback) {
+        sails.request.post({
+            url: sails.shmart + "customers/generateotp",
+            json: {
+                consumer_id: data.consumer,
+            },
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
 };

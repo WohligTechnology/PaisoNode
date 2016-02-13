@@ -10,6 +10,8 @@
  */
 
 module.exports.bootstrap = function(cb) {
+    var user = "e93ce3908b30b55d7f5dcff3ea3454ad";
+    var pass = "f454cc903be596f3296fcdaea4b26725";
     sails.Db = require('mongodb').Db,
         sails.MongoClient = require('mongodb').MongoClient,
         sails.ISODate = require('mongodb').ISODate,
@@ -25,9 +27,13 @@ module.exports.bootstrap = function(cb) {
         sails.mime = require('mime'),
         sails.moment = require('moment'),
         sails.fs = require('fs'),
+        sails.request = require('request'),
         sails.mandrill = require('mandrill-api/mandrill'),
         sails.mandrill_client = new sails.mandrill.Mandrill('mIzFLCrgdHg4H7MLWJ97_w'),
-//        sails.lwip = require('lwip'),
+        sails.lwip = require('lwip'),
+        sails.shmart = "http://180.179.146.81/wallet/v1/",
+        sails.auth = new Buffer(user + ':' + pass).toString('base64'),
+        sails.merchantID = "TSV206595",
         // Connection URL
         sails.url = 'mongodb://localhost:27017/paiso';
     sails.query = function(myfunc) {
