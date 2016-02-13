@@ -253,7 +253,7 @@ module.exports = {
             });
         }
     },
-    getListofCards: function(req, res) {
+    getListOfCards: function(req, res) {
         if (req.body) {
             if (req.body.consumer) {
                 sails.request.get({
@@ -339,6 +339,25 @@ module.exports = {
             });
         }
     },
+    addMoney: function(req, res) {
+        if (req.body) {
+            if (req.body.consumer) {
+                User.addMoney(req.body, function(data) {
+                    res.json(data);
+                });
+            } else {
+                res.json({
+                    value: false,
+                    comment: "Please provide parameters"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                comment: "Please provide parameters"
+            });
+        }
+    },
     removeMoney: function(req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount) {
@@ -397,7 +416,6 @@ module.exports = {
         }
     },
     //////////////////////////////////////////////SHMART
-
 
 
     //////////////////////////////////////////////Extra APIs

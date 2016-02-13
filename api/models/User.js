@@ -986,6 +986,45 @@ module.exports = {
             }
         });
     },
+    addMoney: function(data, callback) {
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        data.request = "";
+        for (var i = 0; i < 9; i++) {
+            data.request += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        sails.request.post({
+            url: sails.shmart + "credits/general",
+            json: {
+                amount: data.amount,
+                consumer_id: data.consumer,
+                request_id: data.request
+            },
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
     removeMoney: function(data, callback) {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         data.ref = "";
