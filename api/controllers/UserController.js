@@ -235,7 +235,9 @@ module.exports = {
             if (req.query.consumer) {
                 User.saveCard(req.query.consumer, function(data) {
                     if (data.indexOf("/") != -1) {
-                        res.redirect(data);
+                        res.json({
+                            link: data
+                        });
                     } else {
                         res.json(data);
                     }
