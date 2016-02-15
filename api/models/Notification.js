@@ -287,6 +287,7 @@
               }
           },
           notify: function (data, callback) {
+            
               console.log(data);
               data.timestamp = new Date();
               var message = new gcm.Message();
@@ -456,7 +457,7 @@
                   if (resp.value != false) {
                       var length = resp.length;
                       _.each(resp, function (key) {
-                          
+
                           if (key.notificationtoken != undefined) {
                               k++;
                               var notifydata = {
@@ -477,7 +478,7 @@
                                   }
                               });
                           }
-                          
+
                       });
                   } else {
                       callback({

@@ -22,7 +22,7 @@ module.exports = {
                         data.validtill = new Date();
                         data.validtill.setMonth(data.validtill.getMonth() + 12);
                     }
-                    data.status = "pending";
+                    // data.status = "pending";
                     data.passbook = "available";
                     data._id = sails.ObjectID();
                     db.collection('transaction').insert(data, function (err, created) {
