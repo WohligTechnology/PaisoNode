@@ -535,7 +535,7 @@ module.exports = {
           var cashback = (data.offerpercent * data.amount) / 100;
           User.addMoney({
             consumer: data.consumer,
-            amount: data.amount
+            amount: cashback
           }, function(response) {
             var balance = 0;
             User.readMoney({
