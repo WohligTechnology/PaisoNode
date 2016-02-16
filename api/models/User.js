@@ -493,38 +493,116 @@ module.exports = {
       }
     });
   },
-  moneySend:function(data,callback){
+  moneySend: function(data, callback) {
     User.findUserByMobile({
-      mobile:data.mobile
-    },function(resp){
-      if(resp.value ==  false){
+      mobile: data.mobile
+    }, function(resp) {
+      if (resp.value == false) {
         callback(resp);
-      }else{
-        data.name=resp.name;
-        User.sendMoney(data,function(response){
-          if(response.value == true){
+      } else {
+        data.name = resp.name;
+        User.sendMoney(data, function(response) {
+          if (response.value == true) {
             Transaction.save({
-              from:data.user,
-              to:resp._id,
-              type:"sendmoney",
-              amount:data.amount,
-              mobile:data.mobile,
-              name:resp.name
-            },function(response2){
+              from: data.user,
+              to: resp._id,
+              type: "sendmoney",
+              amount: data.amount,
+              mobile: data.mobile,
+              name: resp.name
+            }, function(response2) {
               Notification.notify({
-                deviceid:resp.notificationtoken.deviceid,
-                os:resp.notificationtoken.os,
-                type:"sendmoney",
-                name:resp.name,
-                amount:data.amount,
-                comment:data.message
-              },function(response){});
+                deviceid: resp.notificationtoken.deviceid,
+                os: resp.notificationtoken.os,
+                type: "sendmoney",
+                name: resp.name,
+                amount: data.amount,
+                comment: data.message
+              }, function(response3) {});
               callback(response);
             })
-          }else{
+          } else {
             callback(response);
           }
         })
+      }
+    });
+  },
+  redeem: function(data, callback) {
+    User.removeMoney(data, function(resp) {
+      if (resp.value == true) {
+        if (data.hasoffer == true) {
+          var cashback = (data.offerpercent * data.amount) / 100;
+          User.addMoney({
+            consumer: data.consumer,
+            amount: data.amount
+          }, function(response) {
+            var balance = 0;
+            User.readMoney({
+              consumer: data.consumer
+            }, function(readBalance) {
+              balance = readBalance.comment.balance;
+            })
+            if (response.value == true) {
+              Transaction.save({
+                from: data.user,
+                to: data.vendor,
+                type: "redeem",
+                currentbalance: balance ,
+                amount: data.amount,
+                name: data.username,
+                email: data.email,
+                vendor: data.vendorname,
+                mobile: data.mobile,
+                deviceid: data.deviceid,
+                os: data.os,
+                user: data.user,
+                hasoffer: data.hasoffer,
+                cashback: cashback,
+                consumer: data.consumer,
+                offerpercent:data.offerpercent
+              }, function(response1) {
+                if (response1.value) {
+                  callback(resp);
+                } else {
+                  callback(response1);
+                }
+              });
+
+            }
+          });
+
+        } else {
+          var balance = 0;
+          User.readMoney({
+            consumer: data.consumer
+          }, function(readBalance) {
+            balance = readBalance.comment.balance;
+          });
+          Transaction.save({
+            from: data.user,
+            to: data.vendor,
+            type: "redeem",
+            currentbalance: balance ,
+            amount: data.amount,
+            name: data.username,
+            email: data.email,
+            vendor: data.vendorname,
+            mobile: data.mobile,
+            deviceid: data.deviceid,
+            os: data.os,
+            user: data.user,
+            consumer: data.consumer
+          }, function(response1) {
+            if (response1.value) {
+              callback(resp);
+            } else {
+              callback(response1);
+            }
+          });
+        }
+      } else {
+
       }
     });
   },
@@ -998,53 +1076,53 @@ module.exports = {
         console.log(response);
         paisomoney = data.amount / 10
         User.addMoney({
-            consumer: data.consumer,
-            amount: paisomoney
-          }, function(response1) {
-            if(!data.referrer){
-                callback(response1);
-            }else{
-              User.findUserByMobile({
-                mobile:data.referrer
-              },function(response2){
-                var extra = data.amount/100;
+          consumer: data.consumer,
+          amount: paisomoney
+        }, function(response1) {
+          if (!data.referrer) {
+            callback(response1);
+          } else {
+            User.findUserByMobile({
+              mobile: data.referrer
+            }, function(response2) {
+              var extra = data.amount / 100;
               console.log(response2);
-                  response2.referral =_.map(response2.referral,function(key){
-                    console.log(key);
-                    if(key._id==data.user){
-                      console.log("here");
-                      key.amountearned = key.amountearned + extra;
-                    }
-                    return key;
-                  });
+              response2.referral = _.map(response2.referral, function(key) {
+                console.log(key);
+                if (key._id == data.user) {
+                  console.log("here");
+                  key.amountearned = key.amountearned + extra;
+                }
+                return key;
+              });
 
-                  var request={
-                    consumer:response2.consumer_id,
-                    amount:extra
-                  };
-                  User.addMoney(request,function(response3){
+              var request = {
+                consumer: response2.consumer_id,
+                amount: extra
+              };
+              User.addMoney(request, function(response3) {
 
-                    Notification.notify({
-                      name:data.name,
-                      amount:extra,
-                      deviceid:response2.notificationtoken.deviceid,
-                      os:response2.notificationtoken.os,
-                      type:"referral",
-                      new:false
-                    },function(resp){
-console.log(resp);
-                    })
-                    User.save(response2,function(resp){
-                        callback(response3);
-                    });
+                Notification.notify({
+                  name: data.name,
+                  amount: extra,
+                  deviceid: response2.notificationtoken.deviceid,
+                  os: response2.notificationtoken.os,
+                  type: "referral",
+                  new: false
+                }, function(resp) {
+                  console.log(resp);
+                })
+                User.save(response2, function(resp) {
+                  callback(response3);
+                });
 
-                  })
               })
-            }
+            })
+          }
 
-          })
+        })
 
-          // User.addToWallet
+        // User.addToWallet
       } else {
         callback(response);
       }
