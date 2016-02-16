@@ -425,6 +425,25 @@ module.exports = {
       });
     }
   },
+  moneySend: function(req, res) {
+    if (req.body) {
+      if (req.body.consumer && req.body.amount) {
+        User.moneySend(req.body, function(data) {
+          res.json(data);
+        });
+      } else {
+        res.json({
+          value: false,
+          comment: "Please provide parameters"
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        comment: "Please provide parameters"
+      });
+    }
+  },
   generateOtpForDebit: function(req, res) {
     if (req.body) {
       if (req.body.consumer) {
