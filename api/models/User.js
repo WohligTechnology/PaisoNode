@@ -1080,16 +1080,25 @@ module.exports = {
           amount: paisomoney
         }, function(response1) {
           if (!data.referrer) {
-            User.readMoney({
-              consumer: data.consumer
-            }, function(readBalance) {
-              User.save({
-                _id:data.user,
-                balance:readBalance.comment.balance
-              }, function(resp) {
-                callback(response1);
+            Transaction.save({
+              from: data.user,
+              to: data.user,
+              type: "balance",
+              amount: data.amount,
+              mobile: data.mobile
+            }, function(response4) {
+              User.readMoney({
+                consumer: data.consumer
+              }, function(readBalance) {
+                User.save({
+                  _id:data.user,
+                  balance:readBalance.comment.balance
+                }, function(resp) {
+                  callback(response1);
+                });
               });
-            });
+            })
+
           } else {
             User.findUserByMobile({
               mobile: data.referrer
@@ -1121,7 +1130,6 @@ module.exports = {
                       type: "balance",
                       amount: data.amount,
                       mobile: data.mobile,
-                      name: resp.name,
                       extra:extra
                     }, function(response4) {
                       Notification.notify({
