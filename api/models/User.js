@@ -493,6 +493,41 @@ module.exports = {
       }
     });
   },
+  moneySend:function(data,callback){
+    User.findUserByMobile({
+      mobile:data.mobile
+    },function(resp){
+      if(resp.value ==  false){
+        callback(resp);
+      }else{
+        data.name=resp.name;
+        User.sendMoney(data,function(response){
+          if(response.value == true){
+            Transaction.save({
+              from:data.user,
+              to:resp._id,
+              type:"sendmoney",
+              amount:data.amount,
+              mobile:data.mobile,
+              name:resp.name
+            },function(response2){
+              Notification.notify({
+                deviceid:resp.notificationtoken.deviceid,
+                os:resp.notificationtoken.os,
+                type:"sendmoney",
+                name:resp.name,
+                amount:data.amount,
+                comment:data.message
+              },function(response){});
+              callback(response);
+            })
+          }else{
+            callback(response);
+          }
+        })
+      }
+    });
+  },
   logout: function(data, callback) {
     sails.query(function(err, db) {
       if (err) {
