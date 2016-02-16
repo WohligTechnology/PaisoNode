@@ -1,6 +1,6 @@
-{"_id":{"$oid":"5638928bf1385b4c104cd9d1"},"icon":"img/ecommerce.png","listview":false,"name":"E-commerce","order":1,"status":true}
-{"_id":{"$oid":"56389290f1385b4c104cd9d2"},"icon":"img/restaurant.png","listview":true,"name":"Restaurants","order":2,"status":true}
-{"_id":{"$oid":"56389295f1385b4c104cd9d3"},"icon":"img/movie.png","listview":true,"name":"Entertainment","order":3,"status":true}
-{"_id":{"$oid":"5638930bf1385b4c104cd9d4"},"icon":"img/sports.png","listview":false,"name":"Sports Merchandise","order":4,"status":true}
-{"_id":{"$oid":"5638931df1385b4c104cd9d5"},"icon":"img/movie.png","listview":true,"name":"Movie Bookings","order":5,"status":false}
-{"_id":{"$oid":"564eea0820adc1402e8088e9"},"icon":"img/retail.png","listview":true,"name":"Retail","order":6,"status":true}
+{ "_id" : { "$oid" : "5638928bf1385b4c104cd9d1" }, "icon" : "img/ecommerce.png", "listview" : false, "name" : "E-commerce", "order" : 1, "status" : true }
+{ "_id" : { "$oid" : "56389290f1385b4c104cd9d2" }, "icon" : "img/restaurant.png", "listview" : true, "name" : "Restaurants", "order" : 2, "status" : true }
+{ "_id" : { "$oid" : "56389295f1385b4c104cd9d3" }, "icon" : "img/movie.png", "listview" : true, "name" : "Entertainment", "order" : 3, "status" : true }
+{ "_id" : { "$oid" : "5638930bf1385b4c104cd9d4" }, "icon" : "img/sports.png", "listview" : false, "name" : "Sports Merchandise", "order" : 4, "status" : true }
+{ "_id" : { "$oid" : "5638931df1385b4c104cd9d5" }, "icon" : "img/movie.png", "listview" : true, "name" : "Movie Bookings", "order" : 5, "status" : false }
+{ "_id" : { "$oid" : "564eea0820adc1402e8088e9" }, "icon" : "img/retail.png", "listview" : true, "name" : "Retail", "order" : 6, "status" : true }
