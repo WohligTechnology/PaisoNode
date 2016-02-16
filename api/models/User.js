@@ -1225,7 +1225,7 @@ module.exports = {
           comment: err
         });
       } else {
-        if (body.status == "success") {
+        if (body.status == "Success") {
           callback({
             value: true,
             comment: body
