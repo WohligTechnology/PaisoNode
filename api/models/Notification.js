@@ -287,7 +287,7 @@
               }
           },
           notify: function (data, callback) {
-            
+
               console.log(data);
               data.timestamp = new Date();
               var message = new gcm.Message();
@@ -297,7 +297,7 @@
               data.link = "";
               if (data.type === "referral") {
                   data.link = "app.referral";
-                  if (data.new) {
+                  if (data.new == true) {
                       data.title = 'New Referral';
                       data.body = data.name + ' signed up on PAiSO with your referral ID. Keep sharing to get more and more balance';
 

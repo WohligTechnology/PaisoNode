@@ -1080,43 +1080,83 @@ module.exports = {
           amount: paisomoney
         }, function(response1) {
           if (!data.referrer) {
-            callback(response1);
+            User.readMoney({
+              consumer: data.consumer
+            }, function(readBalance) {
+              User.save({
+                _id:data.user,
+                balance:readBalance.comment.balance
+              }, function(resp) {
+                callback(response1);
+              });
+            });
           } else {
             User.findUserByMobile({
               mobile: data.referrer
             }, function(response2) {
               var extra = data.amount / 100;
-              console.log(response2);
-              response2.referral = _.map(response2.referral, function(key) {
-                console.log(key);
-                if (key._id == data.user) {
-                  console.log("here");
-                  key.amountearned = key.amountearned + extra;
-                }
-                return key;
-              });
-
-              var request = {
-                consumer: response2.consumer_id,
-                amount: extra
-              };
-              User.addMoney(request, function(response3) {
-
-                Notification.notify({
-                  name: data.name,
-                  amount: extra,
-                  deviceid: response2.notificationtoken.deviceid,
-                  os: response2.notificationtoken.os,
-                  type: "referral",
-                  new: false
-                }, function(resp) {
-                  console.log(resp);
-                })
-                User.save(response2, function(resp) {
-                  callback(response3);
+              if(response2.value == false){
+                callback(response2);
+              }else{
+                response2.referral = _.map(response2.referral, function(key) {
+                  console.log(key);
+                  if (key._id == data.user) {
+                    console.log("here");
+                    key.amountearned = key.amountearned + extra;
+                  }
+                  return key;
                 });
 
-              })
+                var request = {
+                  consumer: response2.consumer_id,
+                  amount: extra
+                };
+                User.addMoney(request, function(response3) {
+
+                  if(response3.value == true){
+
+                    Transaction.save({
+                      from: data.user,
+                      to: data.user,
+                      type: "balance",
+                      amount: data.amount,
+                      mobile: data.mobile,
+                      name: resp.name,
+                      extra:extra
+                    }, function(response4) {
+                      Notification.notify({
+                        name: data.name,
+                        amount: extra,
+                        deviceid: response2.notificationtoken.deviceid,
+                        os: response2.notificationtoken.os,
+                        type: "referral",
+                        new: false
+                      }, function(resp) {
+                        console.log(resp);
+                      });
+                      User.readMoney({
+                        consumer: response2.consumer
+                      }, function(readBalance) {
+                        response2.balance = readBalance.comment.balance;
+                        User.save(response2, function(resp) {
+                          User.readMoney({
+                            consumer: data.consumer
+                          }, function(readBalance) {
+                            User.save({
+                              _id:data.user,
+                              balance:readBalance.comment.balance
+                            }, function(resp) {
+                              callback(response3);
+                            });
+                          })
+                        });
+                      })
+                    })
+                  }else{
+                    callback(response3);
+                  }
+                })
+              }
             })
           }
 
