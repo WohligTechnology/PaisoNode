@@ -425,6 +425,25 @@ module.exports = {
       });
     }
   },
+  redeem: function(req, res) {
+    if (req.body) {
+      if (req.body.consumer && req.body.amount && req.body.vendor && sails.ObjectID.isValid(req.body.vendor) && req.body.user && sails.ObjectID.isValid(req.body.user)) {
+        User.redeem(req.body, function(data) {
+          res.json(data);
+        });
+      } else {
+        res.json({
+          value: false,
+          comment: "Please provide parameters"
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        comment: "Please provide parameters"
+      });
+    }
+  },
   moneySend: function(req, res) {
     if (req.body) {
       if (req.body.consumer && req.body.amount) {
