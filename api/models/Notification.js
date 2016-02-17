@@ -2,10 +2,8 @@
       var apn = require('apn');
       module.exports = {
           save: function (data, callback) {
-            var request = _.cloneDeep(data);
-            delete request.deviceid;
-            delete request.os;
-              if (request.user && request.user != "") {
+
+              if (data.user && data.user != "") {
                   sails.query(function (err, db) {
                       if (err) {
                           console.log(err);
@@ -14,15 +12,15 @@
                           });
                       }
                       if (db) {
-                          var user = sails.ObjectID(request.user);
-                          delete request.user;
-                          if (!request._id) {
-                              request._id = sails.ObjectID();
+                          var user = sails.ObjectID(data.user);
+                          delete data.user;
+                          if (!data._id) {
+                              data._id = sails.ObjectID();
                               db.collection("user").update({
                                   _id: user
                               }, {
                                   $push: {
-                                      notification: request
+                                      notification: data
                                   }
                               }, function (err, updated) {
                                   if (err) {
@@ -45,15 +43,15 @@
                                   }
                               });
                           } else {
-                              request._id = sails.ObjectID(request._id);
+                              data._id = sails.ObjectID(data._id);
                               var tobechanged = {};
                               var attribute = "notification.$.";
-                              _.forIn(request, function (value, key) {
+                              _.forIn(data, function (value, key) {
                                   tobechanged[attribute + key] = value;
                               });
                               db.collection("user").update({
                                   "_id": user,
-                                  "notification._id": request._id
+                                  "notification._id": data._id
                               }, {
                                   $set: tobechanged
                               }, function (err, updated) {
