@@ -2,6 +2,7 @@
       var apn = require('apn');
       module.exports = {
           save: function (data, callback) {
+
               if (data.user && data.user != "") {
                   sails.query(function (err, db) {
                       if (err) {
@@ -74,7 +75,7 @@
                                   } else {
                                       callback({
                                           value: false,
-                                          comment: "No data found"
+                                          comment: "No request found"
                                       });
                                       db.close();
                                   }
@@ -287,8 +288,7 @@
               }
           },
           notify: function (data, callback) {
-            
-              console.log(data);
+
               data.timestamp = new Date();
               var message = new gcm.Message();
               data.title = "";
@@ -297,7 +297,7 @@
               data.link = "";
               if (data.type === "referral") {
                   data.link = "app.referral";
-                  if (data.new) {
+                  if (data.new == true) {
                       data.title = 'New Referral';
                       data.body = data.name + ' signed up on PAiSO with your referral ID. Keep sharing to get more and more balance';
 
@@ -315,7 +315,6 @@
                       data.body = 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
               }
               if (data.type === "redeem") {
-                  console.log("has offer");
                   if (data.hasoffer) {
                       data.link = "app.wallet"
                       data.title = 'Balance Added on cashback',
@@ -354,8 +353,6 @@
               regTokens.push(data.deviceid);
               var sender = new gcm.Sender('AIzaSyAEPTeKE18yipwH2k8Lx-Zr06UoBF95lbU');
               Notification.save(data, function (res) {
-                  console.log("is getting saved");
-                  console.log(res);
                   if (res.value) {
                       if (data.hasoffer) {
                           callback({
@@ -369,9 +366,7 @@
                                   value: true,
                                   comment: "ios"
                               });
-                          } else if (data.os === "android")
-                              console.log(sender);
-                          console.log(message);
+                          } else if (data.os === "android"){
                           sender.send(message, {
                               registrationTokens: regTokens
                           }, function (err, response) {
@@ -389,6 +384,7 @@
                                   });
                               }
                           });
+                        }
                       }
                   }
               });

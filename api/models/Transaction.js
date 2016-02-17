@@ -87,15 +87,11 @@ module.exports = {
                                         if (transrespo.value == true) {
                                             if (data.hasoffer) {
                                                 Notification.notify(data, function (response) {
-                                                    console.log(data);
-                                                    console.log("here")
-                                                    if (response.value == true) {
                                                         callback({
                                                             value: true,
                                                             comment: "everything done successfully"
                                                         });
                                                         db.close();
-                                                    }
                                                 });
                                             } else {
                                                 callback({
@@ -174,10 +170,11 @@ module.exports = {
     sendSMS: function (data, callback) {
         console.log(data);
         if (data.type === "otp") {
+          var pathurl = '/WebSMS/SMSAPI.jsp?username=Paiso&password=chirag123&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Welcome to Paiso, Your OTP is' + data.otp;
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=chirag123&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Welcome%20to%20Paiso,%20Your%20OTP%20is' + data.otp
+                path: encodeURI(pathurl)
             };
             http.get(options, function (res) {
                 callback({
@@ -189,10 +186,11 @@ module.exports = {
                 });
             });
         } else if (data.type === "redeem") {
+          var pathurl='/WebSMS/SMSAPI.jsp?username=Paiso&password=chirag123&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Voucher No' + data.vouchernumber + 'for Rs' + data.amount + 'spent on Brand' + data.vendorname + 'Time' + data.timestamp + 'Valid Till' + data.validtill + '(Current Balance' + data.currentbalance + ').';
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=chirag123&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Voucher%20No' + data.vouchernumber + 'for%20Rs' + data.amount + 'spent%20on%20Brand' + data.vendor + 'Time' + data.timestamp + 'Valid%20Till' + data.validtill + '(Current%20Balance' + data.currentbalance + ').'
+                path: encodeURI(pathurl)
             };
             http.get(options, function (res) {
                 callback({
@@ -204,10 +202,11 @@ module.exports = {
                 });
             });
         } else if (data.type === "balance") {
+          var pathurl='/WebSMS/SMSAPI.jsp?username=Paiso&password=chirag123&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + ',Rs' + (data.amount * (110 / 100)).toFixed(2) + 'have been added to your Paiso wallet.Your current balance is Rs' + data.currentbalance;
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=chirag123&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + ',Rs' + (data.amount * (110 / 100)).toFixed(2) + 'have%20been%20added%20to%20your%20Paiso%20wallet.Your%20current%20balance%20is%20Rs' + data.currentbalance
+                path: encodeURI(pathurl)
             };
             http.get(options, function (res) {
                 callback({
@@ -219,10 +218,11 @@ module.exports = {
                 });
             });
         } else if (data.type === "sendmoney") {
+          var pathurl='/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Your balance of Rs' + data.amount + 'Has been successfully transferred User' + data.name + 'No' + data.mobile;
             var options = {
                 host: 'bulksms.mysmsmantra.com',
                 port: 8080,
-                path: '/WebSMS/SMSAPI.jsp?username=Paiso&password=157699462&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Your%20balance%20of%20Rs' + data.amount + 'Has%20been%20successfully%20transferred%20User' + data.name + 'No' + data.mobile
+                path:encodeURI(pathurl)
             };
             http.get(options, function (res) {
                 callback({
