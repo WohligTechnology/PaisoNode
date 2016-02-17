@@ -1071,9 +1071,6 @@ module.exports = {
   },
   walletAdd: function(data, callback) {
     var paisomoney = 0;
-    User.addToWallet(data, function(response) {
-      if (response.value) {
-        console.log(response);
         paisomoney = data.amount / 10
         User.addMoney({
           consumer: data.consumer,
@@ -1170,11 +1167,6 @@ module.exports = {
 
         })
 
-        // User.addToWallet
-      } else {
-        callback(response);
-      }
-    })
   },
   readMoney: function(data, callback) {
     sails.request.get({
