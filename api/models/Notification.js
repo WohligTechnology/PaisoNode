@@ -2,9 +2,10 @@
       var apn = require('apn');
       module.exports = {
           save: function (data, callback) {
-            delete data.deviceid;
-            delete data.os;
-              if (data.user && data.user != "") {
+            var request = _.cloneDeep(data);
+            delete request.deviceid;
+            delete request.os;
+              if (request.user && request.user != "") {
                   sails.query(function (err, db) {
                       if (err) {
                           console.log(err);
@@ -13,15 +14,15 @@
                           });
                       }
                       if (db) {
-                          var user = sails.ObjectID(data.user);
-                          delete data.user;
-                          if (!data._id) {
-                              data._id = sails.ObjectID();
+                          var user = sails.ObjectID(request.user);
+                          delete request.user;
+                          if (!request._id) {
+                              request._id = sails.ObjectID();
                               db.collection("user").update({
                                   _id: user
                               }, {
                                   $push: {
-                                      notification: data
+                                      notification: request
                                   }
                               }, function (err, updated) {
                                   if (err) {
@@ -44,15 +45,15 @@
                                   }
                               });
                           } else {
-                              data._id = sails.ObjectID(data._id);
+                              request._id = sails.ObjectID(request._id);
                               var tobechanged = {};
                               var attribute = "notification.$.";
-                              _.forIn(data, function (value, key) {
+                              _.forIn(request, function (value, key) {
                                   tobechanged[attribute + key] = value;
                               });
                               db.collection("user").update({
                                   "_id": user,
-                                  "notification._id": data._id
+                                  "notification._id": request._id
                               }, {
                                   $set: tobechanged
                               }, function (err, updated) {
@@ -76,7 +77,7 @@
                                   } else {
                                       callback({
                                           value: false,
-                                          comment: "No data found"
+                                          comment: "No request found"
                                       });
                                       db.close();
                                   }

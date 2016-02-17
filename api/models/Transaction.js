@@ -92,17 +92,14 @@ module.exports = {
                                                   type:"redeem",
                                                   hasoffer:data.hasoffer,
                                                   deviceid:data.deviceid,
-                                                  os:data.os
+                                                  os:data.os,
+                                                  user:data.user
                                                 }, function (response) {
-                                                    console.log(data);
-                                                    console.log("here")
-                                                    if (response.value == true) {
                                                         callback({
                                                             value: true,
                                                             comment: "everything done successfully"
                                                         });
                                                         db.close();
-                                                    }
                                                 });
                                             } else {
                                                 callback({
