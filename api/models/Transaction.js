@@ -86,15 +86,7 @@ module.exports = {
                                     Transaction.sendSMS(data, function (transrespo) {
                                         if (transrespo.value == true) {
                                             if (data.hasoffer) {
-                                                Notification.notify({
-                                                  cashback:data.cashback,
-                                                  vendor:data.vendor,
-                                                  type:"redeem",
-                                                  hasoffer:data.hasoffer,
-                                                  deviceid:data.deviceid,
-                                                  os:data.os,
-                                                  user:data.user
-                                                }, function (response) {
+                                                Notification.notify(data, function (response) {
                                                         callback({
                                                             value: true,
                                                             comment: "everything done successfully"
