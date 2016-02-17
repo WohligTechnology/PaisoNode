@@ -2,6 +2,8 @@
       var apn = require('apn');
       module.exports = {
           save: function (data, callback) {
+            delete data.deviceid;
+            delete data.os;
               if (data.user && data.user != "") {
                   sails.query(function (err, db) {
                       if (err) {

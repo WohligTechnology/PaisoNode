@@ -86,7 +86,14 @@ module.exports = {
                                     Transaction.sendSMS(data, function (transrespo) {
                                         if (transrespo.value == true) {
                                             if (data.hasoffer) {
-                                                Notification.notify(data, function (response) {
+                                                Notification.notify({
+                                                  cashback:data.cashback,
+                                                  vendor:data.vendor,
+                                                  type:"redeem",
+                                                  hasoffer:data.hasoffer,
+                                                  deviceid:data.deviceid,
+                                                  os:data.os
+                                                }, function (response) {
                                                     console.log(data);
                                                     console.log("here")
                                                     if (response.value == true) {

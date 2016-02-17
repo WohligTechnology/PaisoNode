@@ -525,7 +525,7 @@ module.exports = {
                 deviceid: resp.notificationtoken.deviceid,
                 os: resp.notificationtoken.os,
                 type: "sendmoney",
-                name: resp.name,
+                name: data.name,
                 amount: data.amount,
                 comment: data.message,
                 user:resp._id
