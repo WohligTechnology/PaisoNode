@@ -39,6 +39,19 @@ module.exports = {
             });
         }
     },
+    deleteall: function(req, res) {
+        if (req.body) {
+            var print = function(data) {
+                res.json(data);
+            }
+            User.deleteall(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "User-id is incorrect"
+            });
+        }
+    },
     findorcreate: function(req, res) {
         var print = function(data) {
             res.json(data);
