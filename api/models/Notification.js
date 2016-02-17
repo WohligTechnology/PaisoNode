@@ -288,7 +288,6 @@
           },
           notify: function (data, callback) {
 
-              console.log(data);
               data.timestamp = new Date();
               var message = new gcm.Message();
               data.title = "";
@@ -315,7 +314,6 @@
                       data.body = 'Rs. ' + data.amount + ' have been added to your wallet.\n "' + data.comment + '."';
               }
               if (data.type === "redeem") {
-                  console.log("has offer");
                   if (data.hasoffer) {
                       data.link = "app.wallet"
                       data.title = 'Balance Added on cashback',
@@ -354,8 +352,6 @@
               regTokens.push(data.deviceid);
               var sender = new gcm.Sender('AIzaSyAEPTeKE18yipwH2k8Lx-Zr06UoBF95lbU');
               Notification.save(data, function (res) {
-                  console.log("is getting saved");
-                  console.log(res);
                   if (res.value) {
                       if (data.hasoffer) {
                           callback({
@@ -369,9 +365,7 @@
                                   value: true,
                                   comment: "ios"
                               });
-                          } else if (data.os === "android")
-                              console.log(sender);
-                          console.log(message);
+                          } else if (data.os === "android"){
                           sender.send(message, {
                               registrationTokens: regTokens
                           }, function (err, response) {
@@ -389,6 +383,7 @@
                                   });
                               }
                           });
+                        }
                       }
                   }
               });

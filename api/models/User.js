@@ -109,11 +109,21 @@ module.exports = {
                         });
                         User.save(referrerUser, function(responseReferrer) {
                           if (responseReferrer.value == true) {
-                            callback({
-                              value: true,
-                              _id: data._id,
-                              user: data
-                            });
+                            Notification.notify({
+                              new:true,
+                              type:"referral",
+                              name:data.name,
+                              deviceid:referrerUser.notificationtoken.deviceid,
+                              os:referrerUser.notificationtoken.os,
+                              user:referrerUser._id
+                            },function(sent){
+                              callback({
+                                value: true,
+                                _id: data._id,
+                                user: data
+                              });
+                            })
+
                           }
                         })
                       }
@@ -517,7 +527,8 @@ module.exports = {
                 type: "sendmoney",
                 name: resp.name,
                 amount: data.amount,
-                comment: data.message
+                comment: data.message,
+                user:resp._id
               }, function(response3) {});
               callback(response);
             })
@@ -1105,9 +1116,7 @@ module.exports = {
                 callback(response2);
               }else{
                 response2.referral = _.map(response2.referral, function(key) {
-                  console.log(key);
-                  if (key._id == data.user) {
-                    console.log("here");
+                    if (key._id == data.user) {
                     key.amountearned = key.amountearned + extra;
                   }
                   return key;
@@ -1135,7 +1144,8 @@ module.exports = {
                         deviceid: response2.notificationtoken.deviceid,
                         os: response2.notificationtoken.os,
                         type: "referral",
-                        new: false
+                        new: false,
+                        user:response2._id
                       }, function(resp) {
                         console.log(resp);
                       });
