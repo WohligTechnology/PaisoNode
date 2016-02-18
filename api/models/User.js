@@ -1054,7 +1054,7 @@ module.exports = {
     //////////////////////////////////////////////TRANSACTION
     saveCard: function(data, callback) {
         sails.request.get({
-            url: "http://localhost/CallEncrypt?user=" + data
+            url: "http://paiso-123.appspot.com/index2.php?user=" + data
         }, function(err, http, body) {
             if (err) {
                 console.log(err);
