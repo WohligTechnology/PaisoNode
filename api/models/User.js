@@ -123,13 +123,11 @@ module.exports = {
                                                                 user: data
                                                             });
                                                         })
-
                                                     }
                                                 })
                                             }
                                         });
                                     }
-
                                     db.close();
                                 } else {
                                     callback({
@@ -579,10 +577,8 @@ module.exports = {
                                     callback(response1);
                                 }
                             });
-
                         }
                     });
-
                 } else {
                     var balance = 0;
                     User.readMoney({
@@ -762,7 +758,6 @@ module.exports = {
                                 db.close();
                             }
                         });
-
                     }
                 });
             }
@@ -796,8 +791,7 @@ module.exports = {
                         var i = 0;
                         _.each(data2[0].referral, function(key) {
                             i++;
-                            if (key._id === myid)
-                                key.amountearned += data.amount / 100;
+                            if (key._id === myid) key.amountearned += data.amount / 100;
                             if (i === data2[0].referral.length) {
                                 data2[0].balance += data.amount / 100;
                                 User.save(data2[0], function(userrespo) {
@@ -1110,6 +1104,47 @@ module.exports = {
             }
         });
     },
+    netBanking: function(data, callback) {
+        var possible = "0123456789";
+        data.request = "";
+        for (var i = 0; i < 11; i++) {
+            data.request += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        sails.request.post({
+            url: sails.shmart + "funds/create_iframe",
+            json: {
+                consumer_id: data.consumer,
+                amount: data.amount,
+                email: data.email,
+                response_url: data.url,
+                merchant_refID: data.request
+            },
+            headers: {
+                Authorization: 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                if (body.status == "success") {
+                    callback({
+                        value: true,
+                        comment: body
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
     walletAdd: function(data, callback) {
         var paisomoney = 0;
         paisomoney = data.amount / 10
@@ -1136,7 +1171,6 @@ module.exports = {
                         });
                     });
                 })
-
             } else {
                 User.findUserByMobile({
                     mobile: data.referrer
@@ -1151,15 +1185,12 @@ module.exports = {
                             }
                             return key;
                         });
-
                         var request = {
                             consumer: response2.consumer_id,
                             amount: extra
                         };
                         User.addMoney(request, function(response3) {
-
                             if (response3.value == true) {
-
                                 Transaction.save({
                                     from: data.user,
                                     to: data.user,
@@ -1204,9 +1235,7 @@ module.exports = {
                     }
                 })
             }
-
         })
-
     },
     readMoney: function(data, callback) {
         sails.request.get({

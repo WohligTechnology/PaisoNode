@@ -343,6 +343,25 @@ module.exports = {
             });
         }
     },
+    netBanking: function(req, res) {
+        if (req.body) {
+            if (req.body.consumer && req.body.amount) {
+                User.addToWallet(req.body, function(data) {
+                    res.json(data);
+                });
+            } else {
+                res.json({
+                    value: false,
+                    comment: "Please provide parameters"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                comment: "Please provide parameters"
+            });
+        }
+    },
     responseCheck: function(req, res) {
         if (req.body) {
             if (req.body.status_code && parseInt(req.body.status_code) == 1 && req.body.status_msg && req.body.status_msg == "Wallet loaded") {
@@ -513,8 +532,6 @@ module.exports = {
         }
     },
     //////////////////////////////////////////////SHMART
-
-
     //////////////////////////////////////////////Extra APIs
     generateOTP: function(req, res) {
         if (req.body) {
