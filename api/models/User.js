@@ -1062,7 +1062,7 @@ module.exports = {
         });
     },
     addToWallet: function(data, callback) {
-        var possible = "0123456789";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         data.request = "";
         for (var i = 0; i < 11; i++) {
             data.request += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -1105,7 +1105,7 @@ module.exports = {
         });
     },
     netBanking: function(data, callback) {
-        var possible = "0123456789";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         data.request = "";
         for (var i = 0; i < 11; i++) {
             data.request += possible.charAt(Math.floor(Math.random() * possible.length));
