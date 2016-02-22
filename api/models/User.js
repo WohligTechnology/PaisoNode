@@ -117,12 +117,16 @@ module.exports = {
                                                             os: referrerUser.notificationtoken.os,
                                                             user: referrerUser._id
                                                         }, function(sent) {
-                                                            callback({
-                                                                value: true,
-                                                                _id: data._id,
-                                                                user: data
-                                                            });
-                                                        })
+
+                                                        });
+                                                        callback({
+                                                            value: true,
+                                                            _id: data._id,
+                                                            user: data
+                                                        });
+                                                        db.close();
+                                                    }else{
+                                                      callback(responseReferrer);
                                                     }
                                                 })
                                             }
@@ -523,7 +527,7 @@ module.exports = {
                                 deviceid: resp.notificationtoken.deviceid,
                                 os: resp.notificationtoken.os,
                                 type: "sendmoney",
-                                name: data.name,
+                                name: resp.name,
                                 amount: data.amount,
                                 comment: data.message,
                                 user: resp._id
