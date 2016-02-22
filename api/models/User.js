@@ -512,7 +512,7 @@ module.exports = {
             if (resp.value == false) {
                 callback(resp);
             } else {
-                data.name = resp.name;
+              data.name = _.cloneDeep(resp.name);
                 User.sendMoney(data, function(response) {
                     if (response.value == true) {
                         Transaction.save({
