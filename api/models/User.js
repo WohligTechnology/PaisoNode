@@ -506,6 +506,7 @@ module.exports = {
         });
     },
     moneySend: function(data, callback) {
+      var sender = data.name;
         User.findUserByMobile({
             mobile: data.mobile
         }, function(resp) {
@@ -513,8 +514,6 @@ module.exports = {
                 callback(resp);
             } else {
               data.name = _.cloneDeep(resp.name);
-              console.log(data.name);
-              console.log(resp.name);
                 User.sendMoney(data, function(response) {
                     if (response.value == true) {
                         Transaction.save({
@@ -529,7 +528,7 @@ module.exports = {
                                 deviceid: resp.notificationtoken.deviceid,
                                 os: resp.notificationtoken.os,
                                 type: "sendmoney",
-                                name: resp.name,
+                                name: sender,
                                 amount: data.amount,
                                 comment: data.message,
                                 user: resp._id
