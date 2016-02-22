@@ -113,9 +113,9 @@ module.exports = {
                                                             new: true,
                                                             type: "referral",
                                                             name: data.name,
-                                                            deviceid: referrerUser.notificationtoken.deviceid,
-                                                            os: referrerUser.notificationtoken.os,
-                                                            user: referrerUser._id
+                                                            deviceid: response.notificationtoken.deviceid,
+                                                            os: response.notificationtoken.os,
+                                                            user: response._id
                                                         }, function(sent) {
 
                                                         });
