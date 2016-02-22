@@ -346,7 +346,7 @@ module.exports = {
     netBanking: function(req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount) {
-                User.addToWallet(req.body, function(data) {
+                User.netBanking(req.body, function(data) {
                     res.json(data);
                 });
             } else {
