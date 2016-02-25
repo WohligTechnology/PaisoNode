@@ -282,11 +282,7 @@ module.exports = {
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("transaction").count({
-                        to: {
-                            '$regex': check
-                        }
-                    }, function (err, number) {
+                    db.collection("transaction").count(function (err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -307,11 +303,7 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("transaction").find({
-                            to: {
-                                '$regex': check
-                            }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
+                        db.collection("transaction").find().skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
                             if (err) {
                                 callback({
                                     value: false
