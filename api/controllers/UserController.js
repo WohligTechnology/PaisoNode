@@ -5,7 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 module.exports = {
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body._id) {
             if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
                 user();
@@ -20,15 +20,15 @@ module.exports = {
         }
 
         function user() {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.save(req.body, print);
         }
     },
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.delete(req.body, print);
@@ -39,9 +39,9 @@ module.exports = {
             });
         }
     },
-    deleteall: function(req, res) {
+    deleteall: function (req, res) {
         if (req.body) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.deleteall(req.body, print);
@@ -52,34 +52,34 @@ module.exports = {
             });
         }
     },
-    findorcreate: function(req, res) {
-        var print = function(data) {
+    findorcreate: function (req, res) {
+        var print = function (data) {
             res.json(data);
         }
         User.findorcreate(req.body, print);
     },
-    find: function(req, res) {
+    find: function (req, res) {
         function callback(data) {
             res.json(data);
         };
         User.find(req.body, callback);
     },
-    countusers: function(req, res) {
+    countusers: function (req, res) {
         function callback(data) {
             res.json(data);
         };
         User.countusers(req.body, callback);
     },
-    adminlogin: function(req, res) {
+    adminlogin: function (req, res) {
         function callback(data) {
             res.json(data);
         };
         User.adminlogin(req.body, callback);
     },
-    changepassword: function(req, res) {
+    changepassword: function (req, res) {
         if (req.body) {
             if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-                var print = function(data) {
+                var print = function (data) {
                     res.json(data);
                 }
                 User.changepassword(req.body, print);
@@ -96,10 +96,10 @@ module.exports = {
             });
         }
     },
-    forgotpassword: function(req, res) {
+    forgotpassword: function (req, res) {
         if (req.body) {
             if (req.body.mobile && req.body.mobile != "") {
-                var print = function(data) {
+                var print = function (data) {
                     res.json(data);
                 }
                 User.forgotpassword(req.body, print);
@@ -116,9 +116,9 @@ module.exports = {
             });
         }
     },
-    findone: function(req, res) {
+    findone: function (req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.findone(req.body, print);
@@ -129,9 +129,9 @@ module.exports = {
             });
         }
     },
-    logout: function(req, res) {
+    logout: function (req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.logout(req.body, print);
@@ -142,9 +142,9 @@ module.exports = {
             });
         }
     },
-    findUserByMobile: function(req, res) {
+    findUserByMobile: function (req, res) {
         if (req.body.mobile && req.body.mobile != "") {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.findUserByMobile(req.body, print);
@@ -155,9 +155,9 @@ module.exports = {
             });
         }
     },
-    validateMobile: function(req, res) {
+    validateMobile: function (req, res) {
         if (req.body.mobile && req.body.mobile != "") {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.validateMobile(req.body, print);
@@ -168,9 +168,9 @@ module.exports = {
             });
         }
     },
-    updateReferrer: function(req, res) {
+    updateReferrer: function (req, res) {
         if (req.body.mobile && req.body.mobile != "" && req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.updateReferrer(req.body, print);
@@ -181,7 +181,7 @@ module.exports = {
             });
         }
     },
-    findlimited: function(req, res) {
+    findlimited: function (req, res) {
         if (req.body.pagesize && req.body.pagesize != "" && req.body.pagenumber && req.body.pagenumber != "") {
             function callback(data) {
                 res.json(data);
@@ -194,9 +194,9 @@ module.exports = {
             });
         }
     },
-    login: function(req, res) {
+    login: function (req, res) {
         if (req.body.mobile && req.body.mobile != "" && req.body.password && req.body.password != "") {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.login(req.body, print);
@@ -209,9 +209,9 @@ module.exports = {
     },
     //////////////////////////////////////////////SHMART
     //////////////////////////////////////////////SIGNUP
-    register: function(req, res) {
+    register: function (req, res) {
         if (req.body) {
-            var print = function(data) {
+            var print = function (data) {
                 res.json(data);
             }
             User.register(req.body, print);
@@ -222,10 +222,10 @@ module.exports = {
             });
         }
     },
-    validateOTP: function(req, res) {
+    validateOTP: function (req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.consumer != "" && req.body.otp && req.body.otp != "") {
-                var print = function(data) {
+                var print = function (data) {
                     res.json(data);
                 }
                 User.validateOTP(req.body, print);
@@ -243,10 +243,10 @@ module.exports = {
         }
     },
     //////////////////////////////////////////////TRANSACTION
-    saveCard: function(req, res) {
+    saveCard: function (req, res) {
         if (req.query) {
             if (req.query.consumer) {
-                User.saveCard(req.query.consumer, function(data) {
+                User.saveCard(req.query.consumer, function (data) {
                     if (data.indexOf("/") != -1) {
                         res.json({
                             link: data
@@ -268,12 +268,12 @@ module.exports = {
             });
         }
     },
-    getListOfCards: function(req, res) {
+    getListOfCards: function (req, res) {
         if (req.body) {
             if (req.body.consumer) {
                 sails.request.get({
                     url: sails.shmart + "cards/cards_list/user_id/" + req.body.consumer
-                }, function(err, http, body) {
+                }, function (err, http, body) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -324,10 +324,10 @@ module.exports = {
             });
         }
     },
-    addToWallet: function(req, res) {
+    addToWallet: function (req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount) {
-                User.addToWallet(req.body, function(data) {
+                User.addToWallet(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -343,10 +343,10 @@ module.exports = {
             });
         }
     },
-    netBanking: function(req, res) {
+    netBanking: function (req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount) {
-                User.netBanking(req.body, function(data) {
+                User.netBanking(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -362,27 +362,21 @@ module.exports = {
             });
         }
     },
-    responseCheck: function(req, res) {
+    responseCheck: function (req, res) {
         if (req.body) {
             if (req.body.status_code && parseInt(req.body.status_code) == 1 && req.body.status_msg && req.body.status_msg == "Wallet loaded") {
-                res.json({ value: true });
+                res.redirect('http://wohlig.co.in/paisoapk/success.html');
             } else {
-                res.json({
-                    value: false,
-                    comment: req.body.status_msg
-                });
+                res.redirect('http://wohlig.co.in/paisoapk/fail.html');
             }
         } else {
-            res.json({
-                value: false,
-                comment: "Please provide parameters"
-            });
+            res.redirect('http://wohlig.co.in/paisoapk/fail.html');
         }
     },
-    readMoney: function(req, res) {
+    readMoney: function (req, res) {
         if (req.body) {
             if (req.body.consumer) {
-                User.readMoney(req.body, function(data) {
+                User.readMoney(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -398,10 +392,10 @@ module.exports = {
             });
         }
     },
-    addMoney: function(req, res) {
+    addMoney: function (req, res) {
         if (req.body) {
             if (req.body.consumer) {
-                User.addMoney(req.body, function(data) {
+                User.addMoney(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -417,10 +411,10 @@ module.exports = {
             });
         }
     },
-    walletAdd: function(req, res) {
+    walletAdd: function (req, res) {
         if (req.body) {
             if (req.body.consumer) {
-                User.walletAdd(req.body, function(data) {
+                User.walletAdd(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -436,10 +430,10 @@ module.exports = {
             });
         }
     },
-    removeMoney: function(req, res) {
+    removeMoney: function (req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount) {
-                User.removeMoney(req.body, function(data) {
+                User.removeMoney(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -455,10 +449,10 @@ module.exports = {
             });
         }
     },
-    sendMoney: function(req, res) {
+    sendMoney: function (req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount) {
-                User.sendMoney(req.body, function(data) {
+                User.sendMoney(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -474,10 +468,10 @@ module.exports = {
             });
         }
     },
-    redeem: function(req, res) {
+    redeem: function (req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount && req.body.vendor && sails.ObjectID.isValid(req.body.vendor) && req.body.user && sails.ObjectID.isValid(req.body.user)) {
-                User.redeem(req.body, function(data) {
+                User.redeem(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -493,10 +487,10 @@ module.exports = {
             });
         }
     },
-    moneySend: function(req, res) {
+    moneySend: function (req, res) {
         if (req.body) {
             if (req.body.consumer && req.body.amount) {
-                User.moneySend(req.body, function(data) {
+                User.moneySend(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -512,10 +506,10 @@ module.exports = {
             });
         }
     },
-    generateOtpForDebit: function(req, res) {
+    generateOtpForDebit: function (req, res) {
         if (req.body) {
             if (req.body.consumer) {
-                User.generateOtpForDebit(req.body, function(data) {
+                User.generateOtpForDebit(req.body, function (data) {
                     res.json(data);
                 });
             } else {
@@ -533,7 +527,7 @@ module.exports = {
     },
     //////////////////////////////////////////////SHMART
     //////////////////////////////////////////////Extra APIs
-    generateOTP: function(req, res) {
+    generateOTP: function (req, res) {
         if (req.body) {
             if (req.body.consumer) {
                 sails.request.post({
@@ -545,7 +539,7 @@ module.exports = {
                         Authorization: 'Basic ' + sails.auth,
                         'Content-Type': 'application/json'
                     }
-                }, function(err, http, body) {
+                }, function (err, http, body) {
                     if (err) {
                         console.log(err);
                         res.json({
@@ -579,7 +573,7 @@ module.exports = {
             });
         }
     },
-    getConsumerId: function(req, res) {
+    getConsumerId: function (req, res) {
         if (req.body) {
             if (req.body.mobile) {
                 sails.request.post({
@@ -591,7 +585,7 @@ module.exports = {
                         Authorization: 'Basic ' + sails.auth,
                         'Content-Type': 'application/json'
                     }
-                }, function(err, http, body) {
+                }, function (err, http, body) {
                     if (err) {
                         console.log(err);
                         res.json({
@@ -625,7 +619,7 @@ module.exports = {
             });
         }
     },
-    checkStatus: function(req, res) {
+    checkStatus: function (req, res) {
         if (req.body) {
             if (req.body.consumer) {
                 sails.request.get({
@@ -634,7 +628,7 @@ module.exports = {
                         Authorization: 'Basic ' + sails.auth,
                         'Content-Type': 'application/json'
                     }
-                }, function(err, http, body) {
+                }, function (err, http, body) {
                     if (err) {
                         console.log(err);
                         res.json({
