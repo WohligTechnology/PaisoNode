@@ -556,33 +556,41 @@ module.exports = {
                             consumer: data.consumer
                         }, function(readBalance) {
                             balance = readBalance.comment.balance;
-                        })
-                        if (response.value == true) {
-                            Transaction.save({
-                                from: data.user,
-                                to: data.vendor,
-                                type: "redeem",
-                                currentbalance: balance,
-                                amount: data.amount,
-                                name: data.username,
-                                email: data.email,
-                                vendor: data.vendorname,
-                                mobile: data.mobile,
-                                deviceid: data.deviceid,
-                                os: data.os,
-                                user: data.user,
-                                hasoffer: data.hasoffer,
-                                cashback: cashback,
-                                consumer: data.consumer,
-                                offerpercent: data.offerpercent
-                            }, function(response1) {
-                                if (response1.value) {
-                                    callback(resp);
-                                } else {
-                                    callback(response1);
-                                }
+                            User.save({
+                                _id: data.user,
+                                balance: balance
+                            }, function(resp) {
+
+                              if (response.value == true) {
+                                  Transaction.save({
+                                      from: data.user,
+                                      to: data.vendor,
+                                      type: "redeem",
+                                      currentbalance: balance,
+                                      amount: data.amount,
+                                      name: data.username,
+                                      email: data.email,
+                                      vendor: data.vendorname,
+                                      mobile: data.mobile,
+                                      deviceid: data.deviceid,
+                                      os: data.os,
+                                      user: data.user,
+                                      hasoffer: data.hasoffer,
+                                      cashback: cashback,
+                                      consumer: data.consumer,
+                                      offerpercent: data.offerpercent
+                                  }, function(response1) {
+                                      if (response1.value) {
+                                          callback(resp);
+                                      } else {
+                                          callback(response1);
+                                      }
+                                  });
+                              }else{
+                                callback(response);
+                              }
                             });
-                        }
+                        })
                     });
                 } else {
                     var balance = 0;
@@ -590,28 +598,34 @@ module.exports = {
                         consumer: data.consumer
                     }, function(readBalance) {
                         balance = readBalance.comment.balance;
+                        User.save({
+                            _id: data.user,
+                            balance: balance
+                        }, function(resp) {
+                          Transaction.save({
+                              from: data.user,
+                              to: data.vendor,
+                              type: "redeem",
+                              currentbalance: balance,
+                              amount: data.amount,
+                              name: data.username,
+                              email: data.email,
+                              vendor: data.vendorname,
+                              mobile: data.mobile,
+                              deviceid: data.deviceid,
+                              os: data.os,
+                              user: data.user,
+                              consumer: data.consumer
+                          }, function(response1) {
+                              if (response1.value) {
+                                  callback(resp);
+                              } else {
+                                  callback(response1);
+                              }
+                          });
+                        });
                     });
-                    Transaction.save({
-                        from: data.user,
-                        to: data.vendor,
-                        type: "redeem",
-                        currentbalance: balance,
-                        amount: data.amount,
-                        name: data.username,
-                        email: data.email,
-                        vendor: data.vendorname,
-                        mobile: data.mobile,
-                        deviceid: data.deviceid,
-                        os: data.os,
-                        user: data.user,
-                        consumer: data.consumer
-                    }, function(response1) {
-                        if (response1.value) {
-                            callback(resp);
-                        } else {
-                            callback(response1);
-                        }
-                    });
+
                 }
             } else {
                 callback(resp);
