@@ -108,9 +108,13 @@ module.exports = {
                                 });
                             } else {
                                 Transaction.sendSMS(data, function (transrespo) {
-                                    callback({
-                                      value:true
-                                    })
+                                    if (transrespo.value == true) {
+                                        callback({
+                                            value: true,
+                                            comment: "everything done successfully"
+                                        });
+                                        db.close();
+                                    }
                                 });
 
                             }
@@ -229,6 +233,10 @@ module.exports = {
                     value: false
                 });
             });
+        }else{
+          callback({
+            value:true
+          })
         }
     },
     find: function (data, callback) {
