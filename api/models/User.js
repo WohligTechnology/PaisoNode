@@ -74,6 +74,7 @@ module.exports = {
               db.close();
             } else {
               data._id = sails.ObjectID();
+              data.timestamp = new Date();
               data.balance = 0;
               data.walletLimit = 10000;
               data.referral = [];
