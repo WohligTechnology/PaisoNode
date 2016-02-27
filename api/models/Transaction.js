@@ -108,13 +108,9 @@ module.exports = {
                                 });
                             } else {
                                 Transaction.sendSMS(data, function (transrespo) {
-                                    if (transrespo.value == true) {
-                                        callback({
-                                            value: true,
-                                            comment: "everything done successfully"
-                                        });
-                                        db.close();
-                                    }
+                                    callback({
+                                      value:true
+                                    })
                                 });
 
                             }
