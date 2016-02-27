@@ -936,7 +936,7 @@ module.exports = {
   },
   countusersintime: function(data, callback) {
     var datetemp = new Date();
-    datetemp.setDate(datetemp.getDate() - 2);
+    datetemp.setDate(datetemp.getDate() - 4);
     console.log(datetemp);
     sails.query(function(err, db) {
       if (err) {
