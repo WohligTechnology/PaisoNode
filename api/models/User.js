@@ -1210,11 +1210,17 @@ module.exports = {
                         };
                         User.addMoney(request, function(response3) {
                             if (response3.value == true) {
+                              Transaction.save({
+                                  from: data.user,
+                                  to: data.user,
+                                  type: "balance",
+                                  amount: data.amount,
+                                  mobile: data.mobile
+                              }, function(respo) {
                                 Transaction.save({
                                     from: data.user,
-                                    to: data.user,
-                                    type: "balance",
-                                    amount: data.amount,
+                                    to: response2._id,
+                                    type: "referralbalance",
                                     mobile: data.mobile,
                                     extra: extra
                                 }, function(response4) {
@@ -1233,7 +1239,10 @@ module.exports = {
                                         consumer: response2.consumer
                                     }, function(readBalance) {
                                         response2.balance = readBalance.comment.balance;
-                                        User.save(response2, function(resp) {
+                                        User.save({
+                                            _id: response2.user,
+                                            balance:reponse2.balance
+                                        }, function(resp) {
                                             User.readMoney({
                                                 consumer: data.consumer
                                             }, function(readBalance) {
@@ -1247,6 +1256,7 @@ module.exports = {
                                         });
                                     })
                                 })
+                              });
                             } else {
                                 callback(response3);
                             }
