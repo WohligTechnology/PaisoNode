@@ -947,12 +947,14 @@ module.exports = {
       }
       if (db) {
         db.collection("user").count({
-          $gt: new Date(datetemp)
-        }, function(err, number) {
+          timestamp:{
+          '$gt': new Date(datetemp)
+        }}, function(err, number) {
           if (number != null) {
             callback(number);
             db.close();
           } else if (err) {
+            console.log(err);
             callback({
               value: false
             });
