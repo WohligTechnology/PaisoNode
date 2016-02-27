@@ -268,7 +268,9 @@ module.exports = {
     findlimited: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
-        var check = new RegExp(data.search, "i");
+        var checkFrom = new RegExp(data.from, "i");
+        var checkTo = new RegExp(data.to, "i");
+        var checkType = new RegExp(data.type, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
         sails.query(function (err, db) {
@@ -282,7 +284,21 @@ module.exports = {
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("transaction").count(function (err, number) {
+                    db.collection("transaction").count({
+                      $or:[{
+                        from :{
+                          '$regex':checkFrom
+                        }
+                      },{
+                        to :{
+                          '$regex':checkTo
+                        }
+                      },{
+                        type :{
+                          '$regex':checkType
+                        }
+                      }]
+                    },function (err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -303,7 +319,21 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("transaction").find().skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
+                        db.collection("transaction").find({
+                          $or:[{
+                            from :{
+                              '$regex':checkFrom
+                            }
+                          },{
+                            to :{
+                              '$regex':checkTo
+                            }
+                          },{
+                            type :{
+                              '$regex':checkType
+                            }
+                          }]
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
                             if (err) {
                                 callback({
                                     value: false
