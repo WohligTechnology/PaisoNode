@@ -1177,6 +1177,7 @@ module.exports = {
                     to: data.user,
                     type: "balance",
                     amount: data.amount,
+                    extra:paisomoney,
                     mobile: data.mobile
                 }, function(response4) {
                     User.readMoney({
@@ -1215,6 +1216,7 @@ module.exports = {
                                   to: data.user,
                                   type: "balance",
                                   amount: data.amount,
+                                  extra:paisomoney,
                                   mobile: data.mobile
                               }, function(respo) {
                                 Transaction.save({
