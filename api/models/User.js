@@ -949,7 +949,7 @@ module.exports = {
       if (db) {
         db.collection("user").count({
           timestamp:{
-          '$gt': new Date(datetemp)
+          '$gt': datetemp
         }}, function(err, number) {
           if (number != null) {
             callback(number);
