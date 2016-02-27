@@ -1241,7 +1241,7 @@ module.exports = {
                                         response2.balance = readBalance.comment.balance;
                                         User.save({
                                             _id: response2.user,
-                                            balance:reponse2.balance
+                                            balance:response2.balance
                                         }, function(resp) {
                                             User.readMoney({
                                                 consumer: data.consumer
