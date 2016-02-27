@@ -70,6 +70,12 @@ module.exports = {
         };
         User.countusers(req.body, callback);
     },
+    countusersintime: function (req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        User.countusersintime(req.body, callback);
+    },
     adminlogin: function (req, res) {
         function callback(data) {
             res.json(data);

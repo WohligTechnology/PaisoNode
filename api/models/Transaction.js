@@ -302,7 +302,7 @@ module.exports = {
                           '$regex':checkType
                         }
                       }]
-                    },function (err, number) {
+                    },function (err, number)   {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -439,7 +439,6 @@ module.exports = {
         });
     },
     findPassbookEntry: function (data, callback) {
-        console.log(data);
         sails.query(function (err, db) {
             if (err) {
                 console.log(err);
