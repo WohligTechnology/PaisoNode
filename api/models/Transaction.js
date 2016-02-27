@@ -233,6 +233,10 @@ module.exports = {
                     value: false
                 });
             });
+        }else{
+          callback({
+            value:true
+          })
         }
     },
     find: function (data, callback) {
