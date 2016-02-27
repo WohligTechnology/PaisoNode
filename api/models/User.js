@@ -987,14 +987,11 @@ module.exports = {
                 if (number != null) {
                   newusers.monthly=number;
                   callback(null,number);
-
                 } else if (err) {
                   console.log(err);
                   callback(err,null);
-
                 } else {
                   callback(null,null);
-
                 }
               });
         },function(callback){
