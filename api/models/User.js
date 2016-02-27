@@ -198,7 +198,8 @@ module.exports = {
             });
             db.close();
           } else if (found && found[0]) {
-            for(var j=0;j<found.length,){
+            for(var j=0;j<found.length;)
+            {
               var datetemp = new Date();
               datetemp.setDate(datetemp.getDate() - j);
               User.save({
