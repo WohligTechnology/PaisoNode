@@ -1210,43 +1210,51 @@ module.exports = {
                         };
                         User.addMoney(request, function(response3) {
                             if (response3.value == true) {
-                                Transaction.save({
-                                    from: data.user,
-                                    to: data.user,
-                                    type: "balance",
-                                    amount: data.amount,
-                                    mobile: data.mobile,
-                                    extra: extra
-                                }, function(response4) {
-                                    Notification.notify({
-                                        name: data.name,
-                                        amount: extra,
-                                        deviceid: response2.notificationtoken.deviceid,
-                                        os: response2.notificationtoken.os,
-                                        type: "referral",
-                                        new: false,
-                                        user: response2._id
-                                    }, function(resp) {
-                                        console.log(resp);
-                                    });
-                                    User.readMoney({
-                                        consumer: response2.consumer
-                                    }, function(readBalance) {
-                                        response2.balance = readBalance.comment.balance;
-                                        User.save(response2, function(resp) {
-                                            User.readMoney({
-                                                consumer: data.consumer
-                                            }, function(readBalance) {
-                                                User.save({
-                                                    _id: data.user,
-                                                    balance: readBalance.comment.balance
-                                                }, function(resp) {
+                              Transaction.save({
+                                  from: data.user,
+                                  to: data.user,
+                                  type: "balance",
+                                  amount: data.amount,
+                                  mobile: data.mobile
+                              }, function(response4) {
+                                  User.readMoney({
+                                      consumer: data.consumer
+                                  }, function(readBalance) {
+                                      User.save({
+                                          _id: data.user,
+                                          balance: readBalance.comment.balance
+                                      }, function(resp) {
+                                          Transaction.save({
+                                              from: data.user,
+                                              to: response2._id,
+                                              type: "referralbalance",
+                                              amount: data.amount,
+                                              mobile: data.mobile,
+                                              extra: extra
+                                          }, function(response4) {
+                                              Notification.notify({
+                                                  name: data.name,
+                                                  amount: extra,
+                                                  deviceid: response2.notificationtoken.deviceid,
+                                                  os: response2.notificationtoken.os,
+                                                  type: "referral",
+                                                  new: false,
+                                                  user: response2._id
+                                              }, function(resp) {
+                                                  console.log(resp);
+                                              });
+                                              User.readMoney({
+                                                  consumer: response2.consumer
+                                              }, function(readBalance) {
+                                                  response2.balance = readBalance.comment.balance;
+                                                  User.save(response2, function(resp) {
                                                     callback(response3);
-                                                });
-                                            })
-                                        });
-                                    })
-                                })
+                                                  });
+                                              })
+                                          })
+                                      });
+                                  });
+                              })
                             } else {
                                 callback(response3);
                             }
