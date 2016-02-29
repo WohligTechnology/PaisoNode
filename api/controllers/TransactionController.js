@@ -54,6 +54,11 @@ module.exports = {
                 comment: "Transaction-id is incorrect"
             });
         }
+    },analyseTransaction: function (req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Transaction.analyseTransaction(req.body, callback);
     },
     findlimited: function (req, res) {
         if (req.body.pagesize && req.body.pagesize != "" && req.body.pagenumber && req.body.pagenumber != "") {

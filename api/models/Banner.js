@@ -125,7 +125,7 @@ module.exports = {
 
                 function callbackfunc1() {
                     db.collection("banner").count({
-                        link: {
+                        imgurl: {
                             '$regex': check
                         }
                     }, function (err, number) {
@@ -150,7 +150,7 @@ module.exports = {
 
                     function callbackfunc() {
                         db.collection("banner").find({
-                            link: {
+                            imgurl: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
