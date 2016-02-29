@@ -43,6 +43,64 @@ module.exports = {
         });
       }
     },
+    adminsave:function(data,callback){
+      if (data.password && data.password != "") {
+        data.password = sails.md5(data.password);
+      }
+      sails.query(function(err, db) {
+        if (err) {
+          console.log(err);
+          callback({
+            value: false
+          });
+        }
+        if (db) {
+          db.collection("user").find({
+            email: data.email
+          }).toArray(function(err, data2) {
+            if (err) {
+              console.log(err);
+              callback({
+                value: false,
+                comment: "Error"
+              });
+              db.close();
+            } else if (data2 && data2[0]) {
+              callback({
+                value: false,
+                comment: "User already exists"
+              });
+              db.close();
+            } else {
+              data._id = sails.ObjectID();
+              data.timestamp = new Date();
+              db.collection('user').insert(data, function(err, created) {
+                if (err) {
+                  console.log(err);
+                  callback({
+                    value: false,
+                    comment: "Error"
+                  });
+                  db.close();
+                } else if (created) {
+                  callback({
+                    value:true,
+                    comment:"created"
+                  });
+                  db.close();
+                } else {
+                  callback({
+                    value: false,
+                    comment: "Not created"
+                  });
+                  db.close();
+                }
+              });
+            }
+          });
+        }
+      });
+    },
     save: function(data, callback) {
       if (data.password && data.password != "") {
         data.password = sails.md5(data.password);
@@ -198,15 +256,6 @@ module.exports = {
               });
               db.close();
             } else if (found && found[0]) {
-              for (var j = 0; j < found.length;) {
-                User.save({
-                  _id: found[j]._id,
-                  timestamp: new Date(found.timestamp)
-                }, function(resp) {
-                  console.log(resp);
-                  j++;
-                });
-              }
               callback(found);
               db.close();
             } else {
@@ -946,6 +995,7 @@ module.exports = {
     },
     countusersOverTime: function(data, callback) {
         var day = new Date();
+        day.setHours(day.getHours() - 24);
         var weekly = new Date();
         weekly.setDate(weekly.getDate() - 7);
         var monthly = new Date();
@@ -1002,6 +1052,18 @@ module.exports = {
               }, function(err, number) {
                 if (number != null) {
                   newusers.weekly=number;
+                  callback(null,number);
+                } else if (err) {
+                  console.log(err);
+                  callback(err,null);
+                } else {
+                  callback(null,null);
+                }
+              });
+        },function(callback){
+              db.collection("user").count(function(err, number) {
+                if (number != null) {
+                  newusers.overall=number;
                   callback(null,number);
 db.close();
                 } else if (err) {
