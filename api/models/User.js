@@ -204,6 +204,9 @@ module.exports = {
             });
           } else {
             var user = sails.ObjectID(data._id);
+            if(data.timestamp){
+              data.timestamp = new Date(data.timestamp);
+            }
             delete data._id
             db.collection('user').update({
               _id: user
