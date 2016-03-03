@@ -178,7 +178,7 @@ module.exports = {
       if (db) {
         db.collection("transaction").aggregate([{
           $match:{
-            type:"redeem"
+              type:"redeem"
           }
         },{
           $group:{
