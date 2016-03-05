@@ -1012,7 +1012,8 @@ module.exports = {
             });
           }
           if (db) {
-        async.parallel([function(callback){
+        async.parallel([
+          function (callback){
               db.collection("user").count({
                 timestamp: {
                   '$gt': day
@@ -1068,14 +1069,11 @@ module.exports = {
                 if (number != null) {
                   newusers.overall=number;
                   callback(null,number);
-db.close();
                 } else if (err) {
                   console.log(err);
                   callback(err,null);
-db.close();
                 } else {
                   callback(null,null);
-                  db.close();
                 }
               });
         }],function(err,result){
@@ -1083,15 +1081,18 @@ db.close();
             callback({
               value:false
             });
+            db.close();
           }else if(result){
             callback({
               value:true,
               result:newusers
             });
+            db.close();
           }else{
             callback({
               value:false
             });
+            db.close();
           }
         });
       }

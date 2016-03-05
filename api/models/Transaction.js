@@ -221,7 +221,6 @@ module.exports = {
     });
   },
   sendSMS: function(data, callback) {
-    console.log(data);
     if (data.type === "otp") {
       var pathurl = '/WebSMS/SMSAPI.jsp?username=Paiso&password=chirag123&sendername=PAISOO&mobileno=91' + data.mobile + '&message=Dear' + data.name + 'Welcome to Paiso, Your OTP is' + data.otp;
       var options = {
