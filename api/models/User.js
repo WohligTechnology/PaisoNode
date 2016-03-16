@@ -1323,25 +1323,29 @@ module.exports = {
             });
           },
           netBanking: function(data, callback) {
+            console.log("////////////////////");
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             data.request = "";
             for (var i = 0; i < 11; i++) {
               data.request += possible.charAt(Math.floor(Math.random() * possible.length));
             }
+            var jsonreq= {
+              consumer_id: data.consumer,
+              amount: data.amount,
+              email: data.email,
+              response_url: data.url,
+              merchant_refID: data.request
+            };
+            console.log(jsonreq);
             sails.request.post({
               url: sails.shmart + "funds/create_iframe",
-              json: {
-                consumer_id: data.consumer,
-                amount: data.amount,
-                email: data.email,
-                response_url: data.url,
-                merchant_refID: data.request
-              },
+              json: jsonreq,
               headers: {
                 Authorization: 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
               }
             }, function(err, http, body) {
+              console.log("/////////////////////////////////////");
               if (err) {
                 console.log(err);
                 callback({
@@ -1349,6 +1353,7 @@ module.exports = {
                   comment: err
                 });
               } else {
+                console.log(body);
                 if (body.status == "success") {
                   callback({
                     value: true,
