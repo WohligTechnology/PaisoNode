@@ -9,9 +9,12 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.bootstrap.html
  */
 
-module.exports.bootstrap = function (cb) {
-    var user = "e93ce3908b30b55d7f5dcff3ea3454ad";
-    var pass = "f454cc903be596f3296fcdaea4b26725";
+module.exports.bootstrap = function(cb) {
+    // var user = "e93ce3908b30b55d7f5dcff3ea3454ad";
+    // var pass = "f454cc903be596f3296fcdaea4b26725";
+
+    var user = "5d05305ba700673a89138f7e8211e51b";
+    var pass = "f2ca0ba1ed9071fcd8d19ca0055e9686";
     sails.Db = require('mongodb').Db,
         sails.MongoClient = require('mongodb').MongoClient,
         sails.ISODate = require('mongodb').ISODate,
@@ -31,12 +34,13 @@ module.exports.bootstrap = function (cb) {
         sails.mandrill = require('mandrill-api/mandrill'),
         sails.mandrill_client = new sails.mandrill.Mandrill('mIzFLCrgdHg4H7MLWJ97_w'),
         sails.lwip = require('lwip'),
-        sails.shmart = "http://180.179.146.81/wallet/v1/",
+        // sails.shmart = "http://180.179.146.81/wallet/v1/",
+        sails.shmart = "https://shmart.in/wallet/v1/",
         sails.auth = new Buffer(user + ':' + pass).toString('base64'),
         sails.merchantID = "TSV206595",
         // Connection URL
         sails.url = 'mongodb://localhost:27017/paiso';
-    sails.query = function (myfunc) {
+    sails.query = function(myfunc) {
             sails.MongoClient.connect(sails.url, myfunc);
         }
         // It's very important to trigger this callback method when you are finished
