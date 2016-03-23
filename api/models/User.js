@@ -1378,6 +1378,8 @@ module.exports = {
               if (!data.referrer) {
                 Transaction.save({
                   from: data.user,
+                  from_name: data.name,
+                  to_name: data.name,
                   to: data.user,
                   type: "balance",
                   amount: data.amount,
@@ -1417,6 +1419,8 @@ module.exports = {
                       if (response3.value == true) {
                         Transaction.save({
                           from: data.user,
+                          from_name:data.name,
+                          to_name:data.name,
                           to: data.user,
                           type: "balance",
                           amount: data.amount,
@@ -1425,6 +1429,8 @@ module.exports = {
                         }, function(respo) {
                           Transaction.save({
                             from: data.user,
+                            from_name:data.name,
+                            to_name: response2.name,
                             to: response2._id,
                             type: "referralbalance",
                             mobile: data.mobile,
