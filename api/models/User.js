@@ -1254,7 +1254,7 @@ module.exports = {
             } else {
                 if (body.status == "success") {
                     callback({
-                        value: false,
+                        value: true,
                         comment: body
                     });
                 } else {
