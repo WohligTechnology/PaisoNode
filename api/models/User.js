@@ -131,75 +131,93 @@ module.exports = {
                             });
                             db.close();
                         } else {
-                            data._id = sails.ObjectID();
-                            data.timestamp = new Date();
-                            data.balance = 0;
-                            data.walletLimit = 10000;
-                            data.referral = [];
-                            data.notification = [];
-                            data.favorite = [];
-                            data.card = []
-                            db.collection('user').insert(data, function(err, created) {
-                                if (err) {
-                                    console.log(err);
-                                    callback({
-                                        value: false,
-                                        comment: "Error"
-                                    });
-                                    db.close();
-                                } else if (created) {
-                                    delete data.password;
-                                    if (!data.referrer) {
-                                        callback({
-                                            value: true,
-                                            _id: data._id,
-                                            user: data
-                                        });
+                            if (data.consumer_id && data.consumer_id != "") {
+                                User.readMoney({
+                                    consumer: data.consumer_id
+                                }, function(readRespo) {
+                                    if (readRespo.value != false) {
+                                        data.balance = readRespo.comment.balance;
+                                        callSave();
                                     } else {
-                                        User.findUserByMobile({
-                                            mobile: data.referrer
-                                        }, function(response) {
-                                            console.log(response);
-                                            var referrerUser = response;
-                                            if (referrerUser.referral) {
-                                                referrerUser.referral.push({
-                                                    _id: data._id,
-                                                    amountearned: 0
-                                                });
-                                                User.save(referrerUser, function(responseReferrer) {
-                                                    if (responseReferrer.value == true) {
-                                                        Notification.notify({
-                                                            new: true,
-                                                            type: "referral",
-                                                            name: data.name,
-                                                            deviceid: response.notificationtoken.deviceid,
-                                                            os: response.notificationtoken.os,
-                                                            user: response._id
-                                                        }, function(sent) {
-
-                                                        });
-                                                        callback({
-                                                            value: true,
-                                                            _id: data._id,
-                                                            user: data
-                                                        });
-                                                        db.close();
-                                                    } else {
-                                                        callback(responseReferrer);
-                                                    }
-                                                })
-                                            }
-                                        });
+                                        data.balance = 0;
+                                        callSave();
                                     }
-                                    db.close();
-                                } else {
-                                    callback({
-                                        value: false,
-                                        comment: "Not created"
-                                    });
-                                    db.close();
-                                }
-                            });
+                                });
+                            } else {
+                                data.balance = 0;
+                                callSave();
+                            }
+
+                            function callSave() {
+                                data._id = sails.ObjectID();
+                                data.timestamp = new Date();
+                                data.walletLimit = 10000;
+                                data.referral = [];
+                                data.notification = [];
+                                data.favorite = [];
+                                data.card = []
+                                db.collection('user').insert(data, function(err, created) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback({
+                                            value: false,
+                                            comment: "Error"
+                                        });
+                                        db.close();
+                                    } else if (created) {
+                                        delete data.password;
+                                        if (!data.referrer) {
+                                            callback({
+                                                value: true,
+                                                _id: data._id,
+                                                user: data
+                                            });
+                                        } else {
+                                            User.findUserByMobile({
+                                                mobile: data.referrer
+                                            }, function(response) {
+                                                console.log(response);
+                                                var referrerUser = response;
+                                                if (referrerUser.referral) {
+                                                    referrerUser.referral.push({
+                                                        _id: data._id,
+                                                        amountearned: 0
+                                                    });
+                                                    User.save(referrerUser, function(responseReferrer) {
+                                                        if (responseReferrer.value == true) {
+                                                            Notification.notify({
+                                                                new: true,
+                                                                type: "referral",
+                                                                name: data.name,
+                                                                deviceid: response.notificationtoken.deviceid,
+                                                                os: response.notificationtoken.os,
+                                                                user: response._id
+                                                            }, function(sent) {
+
+                                                            });
+                                                            callback({
+                                                                value: true,
+                                                                _id: data._id,
+                                                                user: data
+                                                            });
+                                                            db.close();
+                                                        } else {
+                                                            callback(responseReferrer);
+                                                            db.close();
+                                                        }
+                                                    })
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        callback({
+                                            value: false,
+                                            comment: "Not created"
+                                        });
+                                        db.close();
+                                    }
+                                });
+                            }
                         }
                     });
                 } else {
