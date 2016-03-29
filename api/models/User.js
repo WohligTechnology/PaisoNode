@@ -1147,7 +1147,7 @@ module.exports = {
                     mobile_no: data.referrer,
                 },
                 headers: {
-                    Authorization: 'Basic ' + sails.auth,
+                    'Authorization': 'Basic ' + sails.auth,
                     'Content-Type': 'application/json'
                 }
             }, function(err, http, body) {
@@ -1181,7 +1181,7 @@ module.exports = {
                     name_of_customer: data.name
                 },
                 headers: {
-                    Authorization: 'Basic ' + sails.auth,
+                    'Authorization': 'Basic ' + sails.auth,
                     'Content-Type': 'application/json'
                 }
             }, function(err, http, body) {
@@ -1199,7 +1199,7 @@ module.exports = {
                                 consumer_id: body.consumer_id,
                             },
                             headers: {
-                                Authorization: 'Basic ' + sails.auth,
+                                'Authorization': 'Basic ' + sails.auth,
                                 'Content-Type': 'application/json'
                             }
                         }, function(err, http, body2) {
@@ -1241,7 +1241,7 @@ module.exports = {
                 mobile_no: data.mobile,
             },
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1274,7 +1274,7 @@ module.exports = {
                 otp: data.otp
             },
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1333,7 +1333,7 @@ module.exports = {
                 cvv: data.cvv
             },
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1377,7 +1377,7 @@ module.exports = {
             url: sails.shmart + "funds/create_iframe",
             json: jsonreq,
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1518,7 +1518,47 @@ module.exports = {
         sails.request.get({
             url: sails.shmart + "balances/general/consumer_id/" + data.consumer,
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, http, body) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: err
+                });
+            } else {
+                body = JSON.parse(body);
+                if (body.status == "success") {
+                    User.readMoneyV(data, function(respo) {
+                        if (respo.value != false) {
+                            body.balance = parseFloat(body.balance) + parseFloat(respo.comment.balance);
+                            callback({
+                                value: true,
+                                comment: body
+                            });
+                        } else {
+                            callback({
+                                value: true,
+                                comment: body
+                            });
+                        }
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: body
+                    });
+                }
+            }
+        });
+    },
+    readMoneyV: function(data, callback) {
+        sails.request.get({
+            url: sails.shmart + "balances/voucher/consumer_id/" + data.consumer,
+            headers: {
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1545,20 +1585,15 @@ module.exports = {
         });
     },
     addMoney: function(data, callback) {
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        data.request = "";
-        for (var i = 0; i < 9; i++) {
-            data.request += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
         sails.request.post({
-            url: sails.shmart + "credits/general",
+            url: sails.shmart + "vouchers/create",
             json: {
                 amount: data.amount,
                 consumer_id: data.consumer,
-                request_id: data.request
+                expiry_date: "20990101000000"
             },
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1600,7 +1635,7 @@ module.exports = {
                 otp: data.otp,
             },
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1637,7 +1672,7 @@ module.exports = {
                 friend_name: data.name
             },
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
@@ -1669,7 +1704,7 @@ module.exports = {
                 consumer_id: data.consumer,
             },
             headers: {
-                Authorization: 'Basic ' + sails.auth,
+                'Authorization': 'Basic ' + sails.auth,
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {

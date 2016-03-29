@@ -332,7 +332,11 @@ module.exports = {
         if (req.body) {
             if (req.body.consumer) {
                 sails.request.get({
-                    url: sails.shmart + "cards/cards_list/user_id/" + req.body.consumer
+                    url: sails.shmart + "cards/cards_list/user_id/" + req.body.consumer,
+                    headers: {
+                        'Authorization': 'Basic ' + sails.auth,
+                        'Content-Type': 'application/json'
+                    }
                 }, function(err, http, body) {
                     if (err) {
                         console.log(err);
@@ -352,6 +356,66 @@ module.exports = {
                             if (body.status == "success") {
                                 if (body.cards[0] == 0) {
                                     body.cards = [];
+                                    res.json({
+                                        value: true,
+                                        comment: body
+                                    });
+                                } else {
+                                    res.json({
+                                        value: true,
+                                        comment: body
+                                    });
+                                }
+                            } else {
+                                res.json({
+                                    value: false,
+                                    comment: body
+                                });
+                            }
+                        }
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    comment: "Please provide parameters"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                comment: "Please provide parameters"
+            });
+        }
+    },
+    getListOfV: function(req, res) {
+        if (req.body) {
+            if (req.body.consumer) {
+                sails.request.get({
+                    url: sails.shmart + "vouchers/list/consumer_id/" + req.body.consumer,
+                    headers: {
+                        'Authorization': 'Basic ' + sails.auth,
+                        'Content-Type': 'application/json'
+                    }
+                }, function(err, http, body) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false,
+                            comment: err
+                        });
+                    } else {
+                        if (err) {
+                            console.log(err);
+                            res.json({
+                                value: false,
+                                comment: err
+                            });
+                        } else {
+                            body = JSON.parse(body);
+                            if (body.status == "success") {
+                                if (body.vouchers[0] == 0) {
+                                    body.vouchers = [];
                                     res.json({
                                         value: true,
                                         comment: body
@@ -437,6 +501,25 @@ module.exports = {
         if (req.body) {
             if (req.body.consumer) {
                 User.readMoney(req.body, function(data) {
+                    res.json(data);
+                });
+            } else {
+                res.json({
+                    value: false,
+                    comment: "Please provide parameters"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                comment: "Please provide parameters"
+            });
+        }
+    },
+    readMoneyV: function(req, res) {
+        if (req.body) {
+            if (req.body.consumer) {
+                User.readMoneyV(req.body, function(data) {
                     res.json(data);
                 });
             } else {
