@@ -469,7 +469,7 @@ module.exports = {
     },
     netBanking: function(req, res) {
         if (req.body) {
-            if (req.body.consumer && req.body.amount) {
+            if (req.body.email && req.body.amount) {
                 User.netBanking(req.body, function(data) {
                     res.json(data);
                 });
@@ -487,8 +487,9 @@ module.exports = {
         }
     },
     responseCheck: function(req, res) {
+        console.log(req.body);
         if (req.body) {
-            if (req.body.status_code && parseInt(req.body.status_code) == 1 && req.body.status_msg && req.body.status_msg == "Wallet loaded") {
+            if (req.body.status && parseInt(req.body.status) == 0 && req.body.status_msg && req.body.status_msg == "Success") {
                 res.redirect('http://wohlig.co.in/paisoapk/success.html');
             } else {
                 res.redirect('http://wohlig.co.in/paisoapk/fail.html');

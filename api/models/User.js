@@ -1384,15 +1384,17 @@ module.exports = {
             data.request += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         var jsonreq = {
-            consumer_id: data.consumer,
-            amount: data.amount,
             email: data.email,
+            mobileNo: data.mobile,
+            total_amount: data.amount,
+            merchant_refID: data.request,
             response_url: data.url,
-            merchant_refID: data.request
+            checksum_method: "md5",
+            app_used: "IFRAME_CHECKOUT"
         };
         console.log(jsonreq);
         sails.request.post({
-            url: sails.shmart + "funds/create_iframe",
+            url: sails.iframe,
             json: jsonreq,
             headers: {
                 'Authorization': 'Basic ' + sails.auth,
@@ -1409,6 +1411,7 @@ module.exports = {
             } else {
                 console.log(body);
                 if (body.status == "success") {
+                    body.payment_url = "pay.sandbox.shmart.in/pay_post/initiate/" + sails.merchantID + "/" + data.request + "?app_version=v2";
                     callback({
                         value: true,
                         comment: body
@@ -1532,47 +1535,47 @@ module.exports = {
             }
         })
     },
+    // readMoney: function(data, callback) {
+    //     sails.request.get({
+    //         url: sails.shmart + "balances/general/consumer_id/" + data.consumer,
+    //         headers: {
+    //             'Authorization': 'Basic ' + sails.auth,
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }, function(err, http, body) {
+    //         if (err) {
+    //             console.log(err);
+    //             callback({
+    //                 value: false,
+    //                 comment: err
+    //             });
+    //         } else {
+    //             body = JSON.parse(body);
+    //             if (body.status == "success") {
+    //                 User.readMoneyV(data, function(respo) {
+    //                     if (respo.value != false) {
+    //                         body.balance = parseFloat(body.balance) + parseFloat(respo.comment.balance);
+    //                         callback({
+    //                             value: true,
+    //                             comment: body
+    //                         });
+    //                     } else {
+    //                         callback({
+    //                             value: true,
+    //                             comment: body
+    //                         });
+    //                     }
+    //                 });
+    //             } else {
+    //                 callback({
+    //                     value: false,
+    //                     comment: body
+    //                 });
+    //             }
+    //         }
+    //     });
+    // },
     readMoney: function(data, callback) {
-        sails.request.get({
-            url: sails.shmart + "balances/general/consumer_id/" + data.consumer,
-            headers: {
-                'Authorization': 'Basic ' + sails.auth,
-                'Content-Type': 'application/json'
-            }
-        }, function(err, http, body) {
-            if (err) {
-                console.log(err);
-                callback({
-                    value: false,
-                    comment: err
-                });
-            } else {
-                body = JSON.parse(body);
-                if (body.status == "success") {
-                    User.readMoneyV(data, function(respo) {
-                        if (respo.value != false) {
-                            body.balance = parseFloat(body.balance) + parseFloat(respo.comment.balance);
-                            callback({
-                                value: true,
-                                comment: body
-                            });
-                        } else {
-                            callback({
-                                value: true,
-                                comment: body
-                            });
-                        }
-                    });
-                } else {
-                    callback({
-                        value: false,
-                        comment: body
-                    });
-                }
-            }
-        });
-    },
-    readMoneyV: function(data, callback) {
         sails.request.get({
             url: sails.shmart + "balances/voucher/consumer_id/" + data.consumer,
             headers: {
