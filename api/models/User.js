@@ -1427,113 +1427,123 @@ module.exports = {
     },
     walletAdd: function(data, callback) {
         var paisomoney = 0;
-        paisomoney = data.amount / 10
-        User.addMoney({
-            consumer: data.consumer,
-            amount: paisomoney
-        }, function(response1) {
-            if (!data.referrer) {
-                Transaction.save({
-                    from: data.user,
-                    from_name: data.name,
-                    to_name: data.name,
-                    to: data.user,
-                    type: "balance",
-                    amount: data.amount,
-                    extra: paisomoney,
-                    mobile: data.mobile
-                }, function(response4) {
-                    User.readMoney({
-                        consumer: data.consumer
-                    }, function(readBalance) {
-                        User.save({
-                            _id: data.user,
-                            balance: readBalance.comment.balance
-                        }, function(resp) {
-                            callback(response1);
+        Variable.find(data,function(resp){
+          if(resp.value != false){
+            data.amount = data.amount + (((resp[0].value)/100)*data.amount);
+            User.addMoney({
+                consumer: data.consumer,
+                amount: data.amount
+            }, function(response1) {
+                if (!data.referrer) {
+                    Transaction.save({
+                        from: data.user,
+                        from_name: data.name,
+                        to_name: data.name,
+                        to: data.user,
+                        type: "balance",
+                        amount: data.amount,
+                        extra: paisomoney,
+                        mobile: data.mobile
+                    }, function(response4) {
+                        User.readMoney({
+                            consumer: data.consumer
+                        }, function(readBalance) {
+                            User.save({
+                                _id: data.user,
+                                balance: readBalance.comment.balance
+                            }, function(resp) {
+                                callback(response1);
+                            });
                         });
-                    });
-                })
-            } else {
-                User.findUserByMobile({
-                    mobile: data.referrer
-                }, function(response2) {
-                    var extra = data.amount / 100;
-                    if (response2.value == false) {
-                        callback(response2);
-                    } else {
-                        response2.referral = _.map(response2.referral, function(key) {
-                            if (key._id == data.user) {
-                                key.amountearned = key.amountearned + extra;
-                            }
-                            return key;
-                        });
-                        var request = {
-                            consumer: response2.consumer_id,
-                            amount: extra
-                        };
-                        User.addMoney(request, function(response3) {
-                            if (response3.value == true) {
-                                Transaction.save({
-                                    from: data.user,
-                                    from_name: data.name,
-                                    to_name: data.name,
-                                    to: data.user,
-                                    type: "balance",
-                                    amount: data.amount,
-                                    extra: paisomoney,
-                                    mobile: data.mobile
-                                }, function(respo) {
+                    })
+                } else {
+                    User.findUserByMobile({
+                        mobile: data.referrer
+                    }, function(response2) {
+                        var extra = data.amount / 100;
+                        if (response2.value == false) {
+                            callback(response2);
+                        } else {
+                            response2.referral = _.map(response2.referral, function(key) {
+                                if (key._id == data.user) {
+                                    key.amountearned = key.amountearned + extra;
+                                }
+                                return key;
+                            });
+                            var request = {
+                                consumer: response2.consumer_id,
+                                amount: extra
+                            };
+                            User.addMoney(request, function(response3) {
+                                if (response3.value == true) {
                                     Transaction.save({
                                         from: data.user,
                                         from_name: data.name,
-                                        to_name: response2.name,
-                                        to: response2._id,
-                                        type: "referralbalance",
-                                        mobile: data.mobile,
-                                        extra: extra
-                                    }, function(response4) {
-                                        Notification.notify({
-                                            name: data.name,
-                                            amount: extra,
-                                            deviceid: response2.notificationtoken.deviceid,
-                                            os: response2.notificationtoken.os,
-                                            type: "referral",
-                                            new: false,
-                                            user: response2._id
-                                        }, function(resp) {
-                                            console.log(resp);
-                                        });
-                                        User.readMoney({
-                                            consumer: response2.consumer
-                                        }, function(readBalance) {
-                                            response2.balance = readBalance.comment.balance;
-                                            User.save({
-                                                _id: response2.user,
-                                                balance: response2.balance
+                                        to_name: data.name,
+                                        to: data.user,
+                                        type: "balance",
+                                        amount: data.amount,
+                                        extra: paisomoney,
+                                        mobile: data.mobile
+                                    }, function(respo) {
+                                        Transaction.save({
+                                            from: data.user,
+                                            from_name: data.name,
+                                            to_name: response2.name,
+                                            to: response2._id,
+                                            type: "referralbalance",
+                                            mobile: data.mobile,
+                                            extra: extra
+                                        }, function(response4) {
+                                            Notification.notify({
+                                                name: data.name,
+                                                amount: extra,
+                                                deviceid: response2.notificationtoken.deviceid,
+                                                os: response2.notificationtoken.os,
+                                                type: "referral",
+                                                new: false,
+                                                user: response2._id
                                             }, function(resp) {
-                                                User.readMoney({
-                                                    consumer: data.consumer
-                                                }, function(readBalance) {
-                                                    User.save({
-                                                        _id: data.user,
-                                                        balance: readBalance.comment.balance
-                                                    }, function(resp) {
-                                                        callback(response3);
-                                                    });
-                                                })
+                                                console.log(resp);
                                             });
+                                            User.readMoney({
+                                                consumer: response2.consumer
+                                            }, function(readBalance) {
+                                                response2.balance = readBalance.comment.balance;
+                                                User.save({
+                                                    _id: response2.user,
+                                                    balance: response2.balance
+                                                }, function(resp) {
+                                                    User.readMoney({
+                                                        consumer: data.consumer
+                                                    }, function(readBalance) {
+                                                        User.save({
+                                                            _id: data.user,
+                                                            balance: readBalance.comment.balance
+                                                        }, function(resp) {
+                                                            callback(response3);
+                                                        });
+                                                    })
+                                                });
+                                            })
                                         })
-                                    })
-                                });
-                            } else {
-                                callback(response3);
-                            }
-                        })
-                    }
-                })
-            }
+                                    });
+                                } else {
+                                    callback(response3);
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+          }else{
+            callback({
+              value :false,
+              comment : "Variable not found"
+            });
+          }
         })
+
     },
     // readMoney: function(data, callback) {
     //     sails.request.get({
