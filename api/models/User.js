@@ -1411,7 +1411,7 @@ module.exports = {
             } else {
                 console.log(body);
                 if (body.status == "success") {
-                    body.payment_url = "pay.sandbox.shmart.in/pay_post/initiate/" + sails.merchantID + "/" + data.request + "?app_version=v2";
+                    body.payment_url = sails.paymentUrl + sails.merchantID + "/" + data.request + "?app_version=v2";
                     callback({
                         value: true,
                         comment: body
@@ -1427,121 +1427,122 @@ module.exports = {
     },
     walletAdd: function(data, callback) {
         var paisomoney = 0;
-        Variable.find(data,function(resp){
-          if(resp.value != false){
-            data.amount = data.amount + (((resp[0].value)/100)*data.amount);
-            User.addMoney({
-                consumer: data.consumer,
-                amount: data.amount
-            }, function(response1) {
-                if (!data.referrer) {
-                    Transaction.save({
-                        from: data.user,
-                        from_name: data.name,
-                        to_name: data.name,
-                        to: data.user,
-                        type: "balance",
-                        amount: data.amount,
-                        extra: paisomoney,
-                        mobile: data.mobile
-                    }, function(response4) {
-                        User.readMoney({
-                            consumer: data.consumer
-                        }, function(readBalance) {
-                            User.save({
-                                _id: data.user,
-                                balance: readBalance.comment.balance
-                            }, function(resp) {
-                                callback(response1);
+        var ogamount = data.amount;
+        Variable.find({}, function(resp) {
+            if (resp.value != false) {
+                data.amount = data.amount + (((resp[0].percent1) / 100) * data.amount);
+                User.addMoney({
+                    consumer: data.consumer,
+                    amount: data.amount
+                }, function(response1) {
+                    if (!data.referrer) {
+                        Transaction.save({
+                            from: data.user,
+                            from_name: data.name,
+                            to_name: data.name,
+                            to: data.user,
+                            type: "balance",
+                            amount: ogamount,
+                            extra: (((resp[0].percent1) / 100) * ogamount),
+                            mobile: data.mobile
+                        }, function(response4) {
+                            User.readMoney({
+                                consumer: data.consumer
+                            }, function(readBalance) {
+                                User.save({
+                                    _id: data.user,
+                                    balance: readBalance.comment.balance
+                                }, function(resp) {
+                                    callback(response1);
+                                });
                             });
-                        });
-                    })
-                } else {
-                    User.findUserByMobile({
-                        mobile: data.referrer
-                    }, function(response2) {
-                        var extra = data.amount / 100;
-                        if (response2.value == false) {
-                            callback(response2);
-                        } else {
-                            response2.referral = _.map(response2.referral, function(key) {
-                                if (key._id == data.user) {
-                                    key.amountearned = key.amountearned + extra;
-                                }
-                                return key;
-                            });
-                            var request = {
-                                consumer: response2.consumer_id,
-                                amount: extra
-                            };
-                            User.addMoney(request, function(response3) {
-                                if (response3.value == true) {
-                                    Transaction.save({
-                                        from: data.user,
-                                        from_name: data.name,
-                                        to_name: data.name,
-                                        to: data.user,
-                                        type: "balance",
-                                        amount: data.amount,
-                                        extra: paisomoney,
-                                        mobile: data.mobile
-                                    }, function(respo) {
+                        })
+                    } else {
+                        User.findUserByMobile({
+                            mobile: data.referrer
+                        }, function(response2) {
+                            var extra = resp[0].percent2 / 100 * ogamount;
+                            if (response2.value == false) {
+                                callback(response2);
+                            } else {
+                                response2.referral = _.map(response2.referral, function(key) {
+                                    if (key._id == data.user) {
+                                        key.amountearned = key.amountearned + extra;
+                                    }
+                                    return key;
+                                });
+                                var request = {
+                                    consumer: response2.consumer_id,
+                                    amount: extra
+                                };
+                                User.addMoney(request, function(response3) {
+                                    if (response3.value == true) {
                                         Transaction.save({
                                             from: data.user,
                                             from_name: data.name,
-                                            to_name: response2.name,
-                                            to: response2._id,
-                                            type: "referralbalance",
-                                            mobile: data.mobile,
-                                            extra: extra
-                                        }, function(response4) {
-                                            Notification.notify({
-                                                name: data.name,
-                                                amount: extra,
-                                                deviceid: response2.notificationtoken.deviceid,
-                                                os: response2.notificationtoken.os,
-                                                type: "referral",
-                                                new: false,
-                                                user: response2._id
-                                            }, function(resp) {
-                                                console.log(resp);
-                                            });
-                                            User.readMoney({
-                                                consumer: response2.consumer
-                                            }, function(readBalance) {
-                                                response2.balance = readBalance.comment.balance;
-                                                User.save({
-                                                    _id: response2.user,
-                                                    balance: response2.balance
+                                            to_name: data.name,
+                                            to: data.user,
+                                            type: "balance",
+                                            amount: ogamount,
+                                            extra: (((resp[0].percent1) / 100) * ogamount),
+                                            mobile: data.mobile
+                                        }, function(respo) {
+                                            Transaction.save({
+                                                from: data.user,
+                                                from_name: data.name,
+                                                to_name: response2.name,
+                                                to: response2._id,
+                                                type: "referralbalance",
+                                                mobile: data.mobile,
+                                                extra: extra
+                                            }, function(response4) {
+                                                Notification.notify({
+                                                    name: data.name,
+                                                    amount: extra,
+                                                    deviceid: response2.notificationtoken.deviceid,
+                                                    os: response2.notificationtoken.os,
+                                                    type: "referral",
+                                                    new: false,
+                                                    user: response2._id
                                                 }, function(resp) {
-                                                    User.readMoney({
-                                                        consumer: data.consumer
-                                                    }, function(readBalance) {
-                                                        User.save({
-                                                            _id: data.user,
-                                                            balance: readBalance.comment.balance
-                                                        }, function(resp) {
-                                                            callback(response3);
-                                                        });
-                                                    })
+                                                    console.log(resp);
                                                 });
+                                                User.readMoney({
+                                                    consumer: response2.consumer
+                                                }, function(readBalance) {
+                                                    response2.balance = readBalance.comment.balance;
+                                                    User.save({
+                                                        _id: response2.user,
+                                                        balance: response2.balance
+                                                    }, function(resp) {
+                                                        User.readMoney({
+                                                            consumer: data.consumer
+                                                        }, function(readBalance) {
+                                                            User.save({
+                                                                _id: data.user,
+                                                                balance: readBalance.comment.balance
+                                                            }, function(resp) {
+                                                                callback(response3);
+                                                            });
+                                                        })
+                                                    });
+                                                })
                                             })
-                                        })
-                                    });
-                                } else {
-                                    callback(response3);
-                                }
-                            })
-                        }
-                    })
-                }
-            })
-          }else{
-            callback({
-              value :false,
-              comment : "Variable not found"
-            });
-          }
+                                        });
+                                    } else {
+                                        callback(response3);
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            } else {
+                callback({
+                    value: false,
+                    comment: "Variable not found"
+                });
+            }
         })
 
     },
@@ -1602,9 +1603,43 @@ module.exports = {
             } else {
                 body = JSON.parse(body);
                 if (body.status == "success") {
-                    callback({
-                        value: true,
-                        comment: body
+                    sails.query(function(err, db) {
+                        if (err) {
+                            console.log(er);
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                        } else {
+                            db.collection("user").update({
+                                consumer_id: data.consumer
+                            }, {
+                                $set: {
+                                    balance: body.balance
+                                }
+                            }, function(err, data2) {
+                                if (err) {
+                                    console.log(err);
+                                    callback({
+                                        value: false,
+                                        comment: "Error"
+                                    });
+                                    db.close();
+                                } else if (data2) {
+                                    callback({
+                                        value: true,
+                                        comment: body
+                                    });
+                                    db.close();
+                                } else {
+                                    callback({
+                                        value: false,
+                                        comment: "No data found"
+                                    });
+                                    db.close();
+                                }
+                            });
+                        }
                     });
                 } else {
                     callback({
@@ -1621,7 +1656,7 @@ module.exports = {
             json: {
                 amount: data.amount,
                 consumer_id: data.consumer,
-                expiry_date: "20990101000000"
+                expiry_date: "30990101000000"
             },
             headers: {
                 'Authorization': 'Basic ' + sails.auth,
@@ -1670,6 +1705,7 @@ module.exports = {
                 'Content-Type': 'application/json'
             }
         }, function(err, http, body) {
+            console.log(body);
             if (err) {
                 console.log(err);
                 callback({
@@ -1692,39 +1728,92 @@ module.exports = {
         });
     },
     sendMoney: function(data, callback) {
-        sails.request.post({
-            url: sails.shmart + "wallet_transfers/",
-            json: {
-                consumer_id: data.consumer,
-                friend_mobileNo: data.mobile,
-                friend_email: data.email,
-                amount: data.amount,
-                message: data.message,
-                friend_name: data.name
-            },
-            headers: {
-                'Authorization': 'Basic ' + sails.auth,
-                'Content-Type': 'application/json'
-            }
-        }, function(err, http, body) {
-            if (err) {
-                console.log(err);
-                callback({
-                    value: false,
-                    comment: err
+        console.log(data);
+        User.removeMoney({
+            consumer: data.consumer,
+            email: data.email,
+            mobile: data.mymobile,
+            otp: data.otp,
+            amount: data.amount
+        }, function(respo) {
+            console.log(respo);
+            if (respo.value != false) {
+                User.findUserByMobile({
+                    mobile: data.mobile
+                }, function(searchRes) {
+                    if (searchRes.value != false) {
+                        User.addMoney({
+                            amount: data.amount,
+                            consumer: searchRes.consumer_id
+                        }, function(addRespo) {
+                            if (addRespo.value != false) {
+                                Transaction.save({
+                                    from: data.user,
+                                    to: searchRes._id,
+                                    type: "sendmoney",
+                                    amount: data.amount,
+                                    mobile: data.mobile,
+                                    name: searchRes.name
+                                }, function(response2) {
+                                    console.log("/////////////", searchRes)
+                                    Notification.notify({
+                                        deviceid: searchRes.notificationtoken.deviceid,
+                                        os: searchRes.notificationtoken.os,
+                                        type: "sendmoney",
+                                        name: data.name,
+                                        amount: data.amount,
+                                        comment: data.message,
+                                        user: searchRes._id
+                                    }, function(response3) {
+                                        callback({
+                                            value: true,
+                                            comment: "Money sent"
+                                        });
+                                    });
+                                })
+                            } else {
+                                User.addMoney({
+                                    consumer: data.consumer,
+                                    amount: data.amount
+                                }, function(revertRespo) {
+                                    if (revertRespo.value != false) {
+                                        callback({
+                                            value: false,
+                                            comment: "Money reverted"
+                                        });
+                                    } else {
+                                        callback({
+                                            value: false,
+                                            comment: "Error in revert"
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        User.addMoney({
+                            consumer: data.consumer,
+                            amount: data.amount
+                        }, function(revertRespo) {
+                            if (revertRespo.value != false) {
+                                callback({
+                                    value: false,
+                                    comment: "Error in search"
+                                });
+                            } else {
+                                callback({
+                                    value: false,
+                                    comment: "Error in revert"
+                                });
+                            }
+                        });
+                    }
                 });
             } else {
-                if (body.status == "success") {
-                    callback({
-                        value: true,
-                        comment: body
-                    });
-                } else {
-                    callback({
-                        value: false,
-                        comment: body
-                    });
-                }
+                callback({
+                    value: false,
+                    comment: "Error in sender"
+                });
             }
         });
     },
