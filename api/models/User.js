@@ -1656,7 +1656,7 @@ module.exports = {
             json: {
                 amount: data.amount,
                 consumer_id: data.consumer,
-                expiry_date: "30990101000000"
+                expiry_date: "20990101000000"
             },
             headers: {
                 'Authorization': 'Basic ' + sails.auth,
